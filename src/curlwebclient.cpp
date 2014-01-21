@@ -22,6 +22,33 @@ public:
     }
 } curl_global_initializer;
 
+class Curl
+{
+public:
+    Curl(): curl_(curl_easy_init())
+    {
+        if (curl_ == nullptr)
+            throw std::runtime_error("Failed to initialize cURL");
+    }
+
+    ~Curl()
+    {
+        curl_easy_cleanup(curl_);
+    }
+
+    operator CURL *() const
+    {
+        return curl_;
+    }
+
+private:
+    CURL *curl_;
+
+    // No copies
+    Curl(Curl const &) = delete;
+    Curl &operator =(Curl const &) = delete;
+};
+
 }
 
 std::string CurlWebClient::get(std::string const &url, std::map<std::string, std::string> const &values)
