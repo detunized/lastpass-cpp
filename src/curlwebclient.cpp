@@ -25,12 +25,10 @@ public:
 class Curl
 {
 public:
-    explicit Curl(std::string const &url): curl_(curl_easy_init())
+    explicit Curl(): curl_(curl_easy_init())
     {
         if (curl_ == nullptr)
             throw std::runtime_error("Failed to initialize cURL");
-
-        curl_easy_setopt(curl_, CURLOPT_URL, url.c_str());
     }
 
     ~Curl()
@@ -41,6 +39,29 @@ public:
     operator CURL *() const
     {
         return curl_;
+    }
+
+    std::string url_encode(std::string const &raw)
+    {
+        std::unique_ptr<char, decltype(&curl_free)> escaped(curl_easy_escape(curl_, raw.c_str(), raw.size()), &curl_free);
+        return escaped.get();
+    }
+
+    std::string url_encode(std::string const &raw_key, std::string const &raw_value)
+    {
+        return url_encode(raw_key) + "=" + url_encode(raw_value);
+    }
+
+    std::string url_encode(std::map<std::string, std::string> const &values)
+    {
+        std::string result;
+        for (auto const &i: values)
+        {
+            result += result.size() == 0 ? '?' : '&';
+            result += url_encode(i.first, i.second);
+        }
+
+        return result;
     }
 
 private:
@@ -62,7 +83,8 @@ size_t store_response(void *buffer, size_t size, size_t count, std::string *resp
 
 std::string CurlWebClient::get(std::string const &url, std::map<std::string, std::string> const &values)
 {
-    Curl curl(url);
+    Curl curl;
+    curl_easy_setopt(curl, CURLOPT_URL, (url + curl.url_encode(values)).c_str());
 
     std::string response;
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
