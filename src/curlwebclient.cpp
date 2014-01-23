@@ -2,6 +2,8 @@
 
 #include <curl/curl.h>
 
+#include <iostream>
+
 namespace lastpass
 {
 
@@ -57,7 +59,9 @@ public:
         std::string result;
         for (auto const &i: values)
         {
-            result += result.size() == 0 ? '?' : '&';
+            if (!result.empty())
+                result +=  '&';
+
             result += url_encode(i.first, i.second);
         }
 
@@ -84,7 +88,11 @@ size_t store_response(void *buffer, size_t size, size_t count, std::string *resp
 std::string CurlWebClient::get(std::string const &url, std::map<std::string, std::string> const &values)
 {
     Curl curl;
-    curl_easy_setopt(curl, CURLOPT_URL, (url + curl.url_encode(values)).c_str());
+
+    std::string parameters = curl.url_encode(values).c_str();
+    std::string url_with_parameters = parameters.empty() ? url : url + '?' + parameters;
+
+    curl_easy_setopt(curl, CURLOPT_URL, url_with_parameters.c_str());
 
     std::string response;
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
@@ -99,7 +107,24 @@ std::string CurlWebClient::get(std::string const &url, std::map<std::string, std
 
 std::string CurlWebClient::post(std::string const &url, std::map<std::string, std::string> const &values)
 {
-    return {};
+    Curl curl;
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+    // Need to store in a variable to make it stick around until after we're done with the request.
+    std::string parameters = curl.url_encode(values);
+
+    curl_easy_setopt(curl, CURLOPT_POST, 1l);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, parameters.c_str());
+
+    std::string response;
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &store_response);
+
+    CURLcode result = curl_easy_perform(curl);
+    if (result != CURLE_OK)
+        throw std::runtime_error("POST failed");
+
+    return response;
 }
 
 }
