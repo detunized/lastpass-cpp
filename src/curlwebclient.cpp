@@ -102,6 +102,11 @@ std::string CurlWebClient::get(std::string const &url, std::map<std::string, std
     if (result != CURLE_OK)
         throw std::runtime_error("GET failed");
 
+    long response_code = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+    if (response_code != 200)
+        throw std::runtime_error("GET failed");
+
     return response;
 }
 
@@ -122,6 +127,11 @@ std::string CurlWebClient::post(std::string const &url, std::map<std::string, st
 
     CURLcode result = curl_easy_perform(curl);
     if (result != CURLE_OK)
+        throw std::runtime_error("POST failed");
+
+    long response_code = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+    if (response_code != 200)
         throw std::runtime_error("POST failed");
 
     return response;
