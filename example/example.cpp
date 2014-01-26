@@ -14,7 +14,7 @@ int main(int argc, char const *argv[])
                   << web_client.get("http://httpbin.org/get", {{"first name", "Milton"}, {"last name", "Waddams"}})
                   << "\n";
         std::cout << "POST:\n"
-                  << web_client.post("http://httpbin.org/post", {{"first name", "bill"}, {"last name", "Lumbergh"}})
+                  << web_client.post("http://httpbin.org/post", {{"first name", "Bill"}, {"last name", "Lumbergh"}})
                   << "\n";
         std::cout << "iterations:\n"
                   << Fetcher::request_iteration_count("lastpass.ruby@gmail.com", web_client)
