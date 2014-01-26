@@ -1,7 +1,9 @@
 #pragma once
 
 #include "webclient.h"
+
 #include <string>
+#include <vector>
 
 namespace lastpass
 {
@@ -15,6 +17,7 @@ public:
     static Session login(std::string const &username, std::string const &password, int iteration_count, WebClient &web_client);
     static int request_iteration_count(std::string const &username, WebClient &web_client);
     static std::string make_hash(std::string const &username, std::string const &password, int iteration_count);
+    static std::vector<uint8_t> sha256(std::string const &text);
 };
 
 }
