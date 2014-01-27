@@ -8,10 +8,7 @@ namespace lastpass
 
 Session Fetcher::login(std::string const &username, std::string const &password, WebClient &web_client)
 {
-    auto const iteration_count = request_iteration_count(username, web_client);
-    auto response = login(username, password, iteration_count, web_client);
-
-    return {};
+    return login(username, password, request_iteration_count(username, web_client), web_client);
 }
 
 Session Fetcher::login(std::string const &username, std::string const &password, int iteration_count, WebClient &web_client)
@@ -25,7 +22,7 @@ Session Fetcher::login(std::string const &username, std::string const &password,
         {"iterations", std::to_string(iteration_count)}
     });
 
-    return {};
+    return {response, iteration_count};
 }
 
 int Fetcher::request_iteration_count(std::string const &username, WebClient &web_client)

@@ -3,8 +3,16 @@
 #include <boost/test/unit_test.hpp>
 
 #include "../src/fetcher.h"
+#include "../src/session.h"
 
 using namespace lastpass;
+
+BOOST_AUTO_TEST_CASE(Session_getters)
+{
+    Session session("id", 1000);
+    BOOST_CHECK_EQUAL(session.id(), "id");
+    BOOST_CHECK_EQUAL(session.key_iteration_count(), 1000);
+}
 
 BOOST_AUTO_TEST_CASE(Fetcher_make_key)
 {

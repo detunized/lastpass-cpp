@@ -1,14 +1,13 @@
 #pragma once
 
 #include "webclient.h"
+#include "session.h"
 
 #include <string>
 #include <vector>
 
 namespace lastpass
 {
-
-struct Session {};
 
 class Fetcher
 {
