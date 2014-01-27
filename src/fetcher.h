@@ -20,6 +20,7 @@ public:
     static std::string make_hash(std::string const &username, std::string const &password, int iteration_count);
     static std::vector<uint8_t> pbkdf2_sha256(std::string const &password, std::string const &salt, int iteration_count, size_t size);
     static std::vector<uint8_t> sha256(std::string const &text);
+    static std::string to_hex(std::vector<uint8_t> const &bytes);
 };
 
 }

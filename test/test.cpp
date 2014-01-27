@@ -84,3 +84,21 @@ BOOST_AUTO_TEST_CASE(Fetcher_sha256_long)
 
     BOOST_CHECK_EQUAL_COLLECTIONS(actual.begin(), actual.end(), expected.begin(), expected.end());
 }
+
+BOOST_AUTO_TEST_CASE(Fetcher_to_hex)
+{
+    std::map<std::string, std::vector<uint8_t>> const test_cases = {
+        {"", {}},
+        {"00", {0}},
+        {"00ff", {0, 255}},
+        {"00010203040506070809", {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
+        {"000102030405060708090a0b0c0d0e0f", {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}},
+        {"8af633933e96a3c3550c2734bd814195", {0x8a, 0xf6, 0x33, 0x93, 0x3e, 0x96, 0xa3, 0xc3,
+                                              0x55, 0x0c, 0x27, 0x34, 0xbd, 0x81, 0x41, 0x95}},
+    };
+
+    for (auto const &i: test_cases)
+    {
+        BOOST_CHECK_EQUAL(Fetcher::to_hex(i.second), i.first);
+    }
+}
