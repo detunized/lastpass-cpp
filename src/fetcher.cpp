@@ -70,6 +70,13 @@ std::vector<uint8_t> Fetcher::sha256(std::string const &text)
     return hash;
 }
 
+std::vector<uint8_t> Fetcher::to_bytes(std::string const &text)
+{
+    std::vector<uint8_t> bytes(text.size());
+    std::copy(text.begin(), text.end(), bytes.begin());
+    return bytes;
+}
+
 std::string Fetcher::to_hex(std::vector<uint8_t> const &bytes)
 {
     static char const hex_chars[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
