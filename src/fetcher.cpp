@@ -33,6 +33,13 @@ int Fetcher::request_iteration_count(std::string const &username, WebClient &web
     return std::stoi(web_client.post("https://lastpass.com/iterations.php", {{"email", username}}));
 }
 
+std::vector<uint8_t> Fetcher::make_key(std::string const &username, std::string const &password, int iteration_count)
+{
+    return iteration_count == 1
+        ? sha256(username + password)
+        : pbkdf2_sha256(password, username, iteration_count, 32);
+}
+
 std::string Fetcher::make_hash(std::string const &username, std::string const &password, int iteration_count)
 {
     return "a1943cfbb75e37b129bbf78b9baeab4ae6dd08225776397f66b8e0c7a913a055";
