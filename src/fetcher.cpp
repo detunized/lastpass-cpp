@@ -37,24 +37,29 @@ std::vector<uint8_t> Fetcher::make_key(std::string const &username, std::string 
 {
     return iteration_count == 1
         ? sha256(username + password)
-        : pbkdf2_sha256(password, username, iteration_count, 32);
+        : pbkdf2_sha256(to_bytes(password), to_bytes(username), iteration_count, 32);
 }
 
 std::string Fetcher::make_hash(std::string const &username, std::string const &password, int iteration_count)
 {
-    return "a1943cfbb75e37b129bbf78b9baeab4ae6dd08225776397f66b8e0c7a913a055";
+    auto key = make_key(username, password, iteration_count);
+    return iteration_count == 1
+        ? to_hex(sha256(to_hex(key) + password))
+        : to_hex(pbkdf2_sha256(key, to_bytes(password), 1, 32));
 }
 
-std::vector<uint8_t> Fetcher::pbkdf2_sha256(std::string const &password,
-                                            std::string const &salt,
+std::vector<uint8_t> Fetcher::pbkdf2_sha256(std::vector<uint8_t> const &password,
+                                            std::vector<uint8_t> const &salt,
                                             int iteration_count,
                                             size_t size)
 {
+    static_assert(sizeof(uint8_t) == sizeof(char), "uint8_t should be the same size as char");
+
     std::vector<uint8_t> key(size);
     CCKeyDerivationPBKDF(kCCPBKDF2,
-                         password.c_str(),
+                         reinterpret_cast<char const *>(password.data()),
                          password.size(),
-                         (uint8_t const *)salt.c_str(),
+                         salt.data(),
                          salt.size(),
                          kCCPRFHmacAlgSHA256,
                          iteration_count,

@@ -33,8 +33,15 @@ BOOST_AUTO_TEST_CASE(Fetcher_make_key)
 
 BOOST_AUTO_TEST_CASE(Fetcher_make_hash)
 {
-    BOOST_CHECK_EQUAL(Fetcher::make_hash("postlass@gmail.com", "pl1234567890", 1),
-                      "a1943cfbb75e37b129bbf78b9baeab4ae6dd08225776397f66b8e0c7a913a055");
+    std::map<int, std::string> test_cases = {
+        {1, "a1943cfbb75e37b129bbf78b9baeab4ae6dd08225776397f66b8e0c7a913a055"},
+        {5, "a95849e029a7791cfc4503eed9ec96ab8675c4a7c4e82b00553ddd179b3d8445"},
+        {50, "1d5bc0d636da4ad469cefe56c42c2ff71589facb9c83f08fcf7711a7891cc159"},
+        {500, "3139861ae962801b59fc41ff7eeb11f84ca56d810ab490f0d8c89d9d9ab07aa6"},
+    };
+
+    for (auto const &i: test_cases)
+        BOOST_CHECK_EQUAL(Fetcher::make_hash("postlass@gmail.com", "pl1234567890", i.first), i.second);
 }
 
 BOOST_AUTO_TEST_CASE(Fetcher_pbkdf2_sha256_short)
@@ -43,7 +50,10 @@ BOOST_AUTO_TEST_CASE(Fetcher_pbkdf2_sha256_short)
                                    0x43, 0xe7, 0x22, 0x52, 0x56, 0xc4, 0xf8, 0x37,
                                    0xa8, 0x65, 0x48, 0xc9, 0x2c, 0xcc, 0x35, 0x48,
                                    0x08, 0x05, 0x98, 0x7c, 0xb7, 0x0b, 0xe1, 0x7b};
-    auto actual = Fetcher::pbkdf2_sha256("password", "salt", 1, expected.size());
+    auto actual = Fetcher::pbkdf2_sha256(Fetcher::to_bytes("password"),
+                                         Fetcher::to_bytes("salt"),
+                                         1,
+                                         expected.size());
 
     BOOST_CHECK_EQUAL_COLLECTIONS(actual.begin(), actual.end(), expected.begin(), expected.end());
 }
@@ -55,8 +65,8 @@ BOOST_AUTO_TEST_CASE(Fetcher_pbkdf2_sha256_long)
                                    0x2b, 0x17, 0x34, 0x7e, 0xbc, 0x18, 0x00, 0x18,
                                    0x1c, 0x4e, 0x2a, 0x1f, 0xb8, 0xdd, 0x53, 0xe1,
                                    0xc6, 0x35, 0x51, 0x8c, 0x7d, 0xac, 0x47, 0xe9};
-    auto actual = Fetcher::pbkdf2_sha256("passwordPASSWORDpassword",
-                                         "saltSALTsaltSALTsaltSALTsaltSALTsalt",
+    auto actual = Fetcher::pbkdf2_sha256(Fetcher::to_bytes("passwordPASSWORDpassword"),
+                                         Fetcher::to_bytes("saltSALTsaltSALTsaltSALTsaltSALTsalt"),
                                          4096,
                                          expected.size());
 
