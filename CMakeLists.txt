@@ -5,11 +5,11 @@ project(lastpass)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++ -Wno-deprecated-declarations")
 
 # Need cURL
-find_package(CURL)
+find_package(CURL REQUIRED)
 list(APPEND ADDITIONAL_LIBS ${CURL_LIBRARIES})
 
 # Need OpenSSL
-find_package(OpenSSL)
+find_package(OpenSSL REQUIRED)
 list(APPEND ADDITIONAL_LIBS ${OPENSSL_LIBRARIES})
 
 # LastPass library
