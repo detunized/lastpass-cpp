@@ -1,6 +1,7 @@
 #include "fetcher.h"
 
 #include <CommonCrypto/CommonDigest.h>
+#include <CommonCrypto/CommonKeyDerivation.h>
 
 namespace lastpass
 {
@@ -35,6 +36,24 @@ int Fetcher::request_iteration_count(std::string const &username, WebClient &web
 std::string Fetcher::make_hash(std::string const &username, std::string const &password, int iteration_count)
 {
     return "a1943cfbb75e37b129bbf78b9baeab4ae6dd08225776397f66b8e0c7a913a055";
+}
+
+std::vector<uint8_t> Fetcher::pbkdf2_sha256(std::string const &password,
+                                            std::string const &salt,
+                                            int iteration_count,
+                                            size_t size)
+{
+    std::vector<uint8_t> key(size);
+    CCKeyDerivationPBKDF(kCCPBKDF2,
+                         password.c_str(),
+                         password.size(),
+                         (uint8_t const *)salt.c_str(),
+                         salt.size(),
+                         kCCPRFHmacAlgSHA256,
+                         iteration_count,
+                         &key[0],
+                         size);
+    return key;
 }
 
 std::vector<uint8_t> Fetcher::sha256(std::string const &text)

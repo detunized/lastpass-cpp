@@ -12,6 +12,32 @@ BOOST_AUTO_TEST_CASE(Fetcher_make_hash)
                       "a1943cfbb75e37b129bbf78b9baeab4ae6dd08225776397f66b8e0c7a913a055");
 }
 
+BOOST_AUTO_TEST_CASE(Fetcher_pbkdf2_sha256_short)
+{
+    std::vector<uint8_t> expected {0x12, 0x0f, 0xb6, 0xcf, 0xfc, 0xf8, 0xb3, 0x2c,
+                                   0x43, 0xe7, 0x22, 0x52, 0x56, 0xc4, 0xf8, 0x37,
+                                   0xa8, 0x65, 0x48, 0xc9, 0x2c, 0xcc, 0x35, 0x48,
+                                   0x08, 0x05, 0x98, 0x7c, 0xb7, 0x0b, 0xe1, 0x7b};
+    auto actual = Fetcher::pbkdf2_sha256("password", "salt", 1, expected.size());
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(actual.begin(), actual.end(), expected.begin(), expected.end());
+}
+
+BOOST_AUTO_TEST_CASE(Fetcher_pbkdf2_sha256_long)
+{
+    std::vector<uint8_t> expected {0x34, 0x8c, 0x89, 0xdb, 0xcb, 0xd3, 0x2b, 0x2f,
+                                   0x32, 0xd8, 0x14, 0xb8, 0x11, 0x6e, 0x84, 0xcf,
+                                   0x2b, 0x17, 0x34, 0x7e, 0xbc, 0x18, 0x00, 0x18,
+                                   0x1c, 0x4e, 0x2a, 0x1f, 0xb8, 0xdd, 0x53, 0xe1,
+                                   0xc6, 0x35, 0x51, 0x8c, 0x7d, 0xac, 0x47, 0xe9};
+    auto actual = Fetcher::pbkdf2_sha256("passwordPASSWORDpassword",
+                                         "saltSALTsaltSALTsaltSALTsaltSALTsalt",
+                                         4096,
+                                         expected.size());
+
+    BOOST_CHECK_EQUAL_COLLECTIONS(actual.begin(), actual.end(), expected.begin(), expected.end());
+}
+
 BOOST_AUTO_TEST_CASE(Fetcher_sha256_short)
 {
     std::vector<uint8_t> expected {0xBA, 0x78, 0x16, 0xBF, 0x8F, 0x01, 0xCF, 0xEA,
