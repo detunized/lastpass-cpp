@@ -1,6 +1,6 @@
 #include "fetcher.h"
 
-#include <openssl/sha.h>
+#include <CommonCrypto/CommonDigest.h>
 
 namespace lastpass
 {
@@ -39,14 +39,8 @@ std::string Fetcher::make_hash(std::string const &username, std::string const &p
 
 std::vector<uint8_t> Fetcher::sha256(std::string const &text)
 {
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-
-    SHA256_Update(&sha256, text.c_str(), text.size());
-
-    std::vector<uint8_t> hash(SHA256_DIGEST_LENGTH);
-    SHA256_Final(&hash[0], &sha256);
-
+    std::vector<uint8_t> hash(CC_SHA256_DIGEST_LENGTH);
+    CC_SHA256(text.c_str(), text.size(), &hash[0]);
     return hash;
 }
 

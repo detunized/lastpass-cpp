@@ -8,10 +8,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++ -Wno-deprecate
 find_package(CURL REQUIRED)
 list(APPEND ADDITIONAL_LIBS ${CURL_LIBRARIES})
 
-# Need OpenSSL
-find_package(OpenSSL REQUIRED)
-list(APPEND ADDITIONAL_LIBS ${OPENSSL_LIBRARIES})
-
 # LastPass library
 add_library(lastpass src/curlwebclient.cpp
                      src/fetcher.cpp)
