@@ -37,17 +37,15 @@ BOOST_AUTO_TEST_CASE(Fetcher_login_with_iterations)
     class MockWebClient: public WebClient
     {
     public:
-        virtual std::string get(std::string const &url,
-                                std::map<std::string, std::string> const &values) override
+        virtual std::string get(std::string const &url, Values const &values) override
         {
             BOOST_FAIL("Should not be called");
             return "";
         }
 
-        virtual std::string post(std::string const &url,
-                                 std::map<std::string, std::string> const &values) override
+        virtual std::string post(std::string const &url, Values const &values) override
         {
-            std::map<std::string, std::string> expected_values = {
+            Values expected_values = {
                 {"method", "mobile"},
                 {"web", "1"},
                 {"xml", "1"},
@@ -76,17 +74,15 @@ BOOST_AUTO_TEST_CASE(Fetcher_request_iteration_count)
     class MockWebClient: public WebClient
     {
     public:
-        virtual std::string get(std::string const &url,
-                                std::map<std::string, std::string> const &values) override
+        virtual std::string get(std::string const &url, Values const &values) override
         {
             BOOST_FAIL("Should not be called");
             return "";
         }
 
-        virtual std::string post(std::string const &url,
-                                 std::map<std::string, std::string> const &values) override
+        virtual std::string post(std::string const &url, Values const &values) override
         {
-            std::map<std::string, std::string> expected_values = {{"email", USERNAME}};
+            Values expected_values = {{"email", USERNAME}};
 
             BOOST_CHECK_EQUAL(url, ITERATIONS_URL);
             BOOST_CHECK(values == expected_values);
@@ -96,8 +92,7 @@ BOOST_AUTO_TEST_CASE(Fetcher_request_iteration_count)
 
     } mwc;
 
-    BOOST_CHECK_EQUAL(Fetcher::request_iteration_count(USERNAME, mwc),
-                      KEY_ITERATION_COUNT);
+    BOOST_CHECK_EQUAL(Fetcher::request_iteration_count(USERNAME, mwc), KEY_ITERATION_COUNT);
 }
 
 BOOST_AUTO_TEST_CASE(Fetcher_make_key)

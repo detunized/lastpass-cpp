@@ -54,7 +54,7 @@ public:
         return url_encode(raw_key) + "=" + url_encode(raw_value);
     }
 
-    std::string url_encode(std::map<std::string, std::string> const &values)
+    std::string url_encode(WebClient::Values const &values)
     {
         std::string result;
         for (auto const &i: values)
@@ -85,7 +85,7 @@ size_t store_response(void *buffer, size_t size, size_t count, std::string *resp
 
 }
 
-std::string CurlWebClient::get(std::string const &url, std::map<std::string, std::string> const &values)
+std::string CurlWebClient::get(std::string const &url, Values const &values)
 {
     Curl curl;
 
@@ -110,7 +110,7 @@ std::string CurlWebClient::get(std::string const &url, std::map<std::string, std
     return response;
 }
 
-std::string CurlWebClient::post(std::string const &url, std::map<std::string, std::string> const &values)
+std::string CurlWebClient::post(std::string const &url, Values const &values)
 {
     Curl curl;
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
