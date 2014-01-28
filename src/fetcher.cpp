@@ -64,7 +64,7 @@ Session Fetcher::login(std::string const &username, std::string const &password,
 
 Session Fetcher::login(std::string const &username, std::string const &password, int iteration_count, WebClient &web_client)
 {
-    auto const response = web_client.post("https://lastpass.com/login.php", {
+    auto response = web_client.post("https://lastpass.com/login.php", {
         {"method", "mobile"},
         {"web", "1"},
         {"xml", "1"},
@@ -72,8 +72,13 @@ Session Fetcher::login(std::string const &username, std::string const &password,
         {"hash", make_hash(username, password, iteration_count)},
         {"iterations", std::to_string(iteration_count)}
     });
+    Xml xml(response);
+    auto id = xml.get_attribute("//ok/@sessionid");
 
-    return {response, iteration_count};
+    if (id.empty())
+        throw std::runtime_error("Failed to login");
+
+    return {id, iteration_count};
 }
 
 int Fetcher::request_iteration_count(std::string const &username, WebClient &web_client)

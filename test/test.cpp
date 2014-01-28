@@ -2,16 +2,70 @@
 #define BOOST_TEST_MODULE lastpass
 #include <boost/test/unit_test.hpp>
 
+#include <boost/format.hpp>
+
 #include "../src/fetcher.h"
 #include "../src/session.h"
 
+#define FS(format_string, arguments) (str(boost::format(format_string) % arguments))
+
 using namespace lastpass;
+
+namespace
+{
+
+std::string const USERNAME = "username";
+std::string const PASSWORD = "password";
+std::string const SESSION_ID = "53ru,Hb713QnEVM5zWZ16jMvxS0";
+int const KEY_ITERATION_COUNT = 5000;
+
+std::string const LOGIN_URL = "https://lastpass.com/login.php";
+std::string const HASH = "7880a04588cfab954aa1a2da98fd9c0d2c6eba4c53e36a94510e6dbf30759256";
+
+}
 
 BOOST_AUTO_TEST_CASE(Session_getters)
 {
     Session session("id", 1000);
     BOOST_CHECK_EQUAL(session.id(), "id");
     BOOST_CHECK_EQUAL(session.key_iteration_count(), 1000);
+}
+
+BOOST_AUTO_TEST_CASE(Fetcher_login_with_iterations)
+{
+    class MockWebClient: public WebClient
+    {
+    public:
+        virtual std::string get(std::string const &url,
+                                std::map<std::string, std::string> const &values) override
+        {
+            BOOST_FAIL("Should not be called");
+            return "";
+        }
+
+        virtual std::string post(std::string const &url,
+                                 std::map<std::string, std::string> const &values) override
+        {
+            std::map<std::string, std::string> expected_values = {
+                {"method", "mobile"},
+                {"web", "1"},
+                {"xml", "1"},
+                {"username", USERNAME},
+                {"hash", HASH},
+                {"iterations", std::to_string(KEY_ITERATION_COUNT)}
+            };
+
+            BOOST_CHECK_EQUAL(url, LOGIN_URL);
+            BOOST_CHECK(values == expected_values);
+
+            return FS("<ok sessionid=\"%1%\" />", SESSION_ID);
+        }
+
+    } mwc;
+
+    auto session = Fetcher::login(USERNAME, PASSWORD, KEY_ITERATION_COUNT, mwc);
+    BOOST_CHECK_EQUAL(session.id(), SESSION_ID);
+    BOOST_CHECK_EQUAL(session.key_iteration_count(), KEY_ITERATION_COUNT);
 }
 
 BOOST_AUTO_TEST_CASE(Fetcher_make_key)
