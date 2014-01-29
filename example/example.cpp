@@ -16,8 +16,8 @@ int main(int argc, char const *argv[])
         std::cout << "POST:\n"
                   << web_client.post("http://httpbin.org/post", {{"first name", "Bill"}, {"last name", "Lumbergh"}})
                   << "\n";
-        std::cout << "iterations:\n"
-                  << Fetcher::request_iteration_count("lastpass.ruby@gmail.com", web_client)
+        std::cout << "GET:\n"
+                  << web_client.get("http://httpbin.org/cookies", {{}}, {{"bob 1", "Bob Slydell"}, {"bob 2", "Bob Porter"}})
                   << "\n";
     }
     catch (std::exception const &e)

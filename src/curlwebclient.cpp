@@ -54,18 +54,28 @@ public:
         return url_encode(raw_key) + "=" + url_encode(raw_value);
     }
 
-    std::string url_encode(WebClient::Values const &values)
+    std::string encode_join(WebClient::Values const &values, std::string const &separator)
     {
         std::string result;
         for (auto const &i: values)
         {
             if (!result.empty())
-                result +=  '&';
+                result += separator;
 
             result += url_encode(i.first, i.second);
         }
 
         return result;
+    }
+
+    std::string url_encode(WebClient::Values const &values)
+    {
+        return encode_join(values, "&");
+    }
+
+    std::string cookie_encode(WebClient::Values const &values)
+    {
+        return encode_join(values, ";");
     }
 
 private:
@@ -89,10 +99,14 @@ std::string CurlWebClient::get(std::string const &url, Values const &values, Val
 {
     Curl curl;
 
-    std::string parameters = curl.url_encode(values).c_str();
-    std::string url_with_parameters = parameters.empty() ? url : url + '?' + parameters;
-
+    auto parameters = curl.url_encode(values);
+    auto url_with_parameters = parameters.empty() ? url : url + '?' + parameters;
     curl_easy_setopt(curl, CURLOPT_URL, url_with_parameters.c_str());
+
+    // Need to store in a variable to make it stick around until after we're done with the request.
+    auto cookie_string = curl.cookie_encode(cookies);
+    if (!cookie_string.empty())
+        curl_easy_setopt(curl, CURLOPT_COOKIE, cookie_string.c_str());
 
     std::string response;
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
@@ -117,9 +131,13 @@ std::string CurlWebClient::post(std::string const &url, Values const &values, Va
 
     // Need to store in a variable to make it stick around until after we're done with the request.
     std::string parameters = curl.url_encode(values);
-
     curl_easy_setopt(curl, CURLOPT_POST, 1l);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, parameters.c_str());
+
+    // Need to store in a variable to make it stick around until after we're done with the request.
+    auto cookie_string = curl.cookie_encode(cookies);
+    if (!cookie_string.empty())
+        curl_easy_setopt(curl, CURLOPT_COOKIE, cookie_string.c_str());
 
     std::string response;
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
