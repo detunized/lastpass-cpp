@@ -13,8 +13,12 @@ public:
 
     virtual ~WebClient() {}
 
-    virtual std::string get(std::string const &url, Values const &values) = 0;
-    virtual std::string post(std::string const &url, Values const &values) = 0;
+    virtual std::string get(std::string const &url,
+                            Values const &values = Values(),
+                            Values const &cookies = Values()) = 0;
+    virtual std::string post(std::string const &url,
+                             Values const &values = Values(),
+                             Values const &cookies = Values()) = 0;
 };
 
 }

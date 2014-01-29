@@ -37,13 +37,13 @@ BOOST_AUTO_TEST_CASE(Fetcher_login_with_iterations)
     class MockWebClient: public WebClient
     {
     public:
-        virtual std::string get(std::string const &url, Values const &values) override
+        virtual std::string get(std::string const &url, Values const &values, Values const &cookies) override
         {
             BOOST_FAIL("Should not be called");
             return "";
         }
 
-        virtual std::string post(std::string const &url, Values const &values) override
+        virtual std::string post(std::string const &url, Values const &values, Values const &cookies) override
         {
             Values expected_values = {
                 {"method", "mobile"},
@@ -56,6 +56,7 @@ BOOST_AUTO_TEST_CASE(Fetcher_login_with_iterations)
 
             BOOST_CHECK_EQUAL(url, LOGIN_URL);
             BOOST_CHECK(values == expected_values);
+            BOOST_CHECK(cookies.empty());
 
             return FS("<ok sessionid=\"%1%\" />", SESSION_ID);
         }
@@ -74,18 +75,19 @@ BOOST_AUTO_TEST_CASE(Fetcher_request_iteration_count)
     class MockWebClient: public WebClient
     {
     public:
-        virtual std::string get(std::string const &url, Values const &values) override
+        virtual std::string get(std::string const &url, Values const &values, Values const &cookies) override
         {
             BOOST_FAIL("Should not be called");
             return "";
         }
 
-        virtual std::string post(std::string const &url, Values const &values) override
+        virtual std::string post(std::string const &url, Values const &values, Values const &cookies) override
         {
             Values expected_values = {{"email", USERNAME}};
 
             BOOST_CHECK_EQUAL(url, ITERATIONS_URL);
             BOOST_CHECK(values == expected_values);
+            BOOST_CHECK(cookies.empty());
 
             return std::to_string(KEY_ITERATION_COUNT);
         }

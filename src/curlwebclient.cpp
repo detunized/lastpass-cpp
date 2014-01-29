@@ -85,7 +85,7 @@ size_t store_response(void *buffer, size_t size, size_t count, std::string *resp
 
 }
 
-std::string CurlWebClient::get(std::string const &url, Values const &values)
+std::string CurlWebClient::get(std::string const &url, Values const &values, Values const &cookies)
 {
     Curl curl;
 
@@ -110,7 +110,7 @@ std::string CurlWebClient::get(std::string const &url, Values const &values)
     return response;
 }
 
-std::string CurlWebClient::post(std::string const &url, Values const &values)
+std::string CurlWebClient::post(std::string const &url, Values const &values, Values const &cookies)
 {
     Curl curl;
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
