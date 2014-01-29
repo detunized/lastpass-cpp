@@ -92,6 +92,8 @@ Session Fetcher::login(std::string const &username, std::string const &password,
     if (id.empty())
         throw std::runtime_error("Failed to login");
 
+    // TODO: Handle errors here!
+
     return {id, iteration_count};
 }
 
