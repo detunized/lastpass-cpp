@@ -2,7 +2,8 @@
 
 #include <curl/curl.h>
 
-#include <iostream>
+#include <memory>
+#include <stdexcept>
 
 namespace lastpass
 {
