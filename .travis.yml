@@ -3,5 +3,8 @@ language: cpp
 compiler:
   - clang
 
+before_install:
+  - sudo apt-get install libboost-test-dev
+
 script:
   - make
