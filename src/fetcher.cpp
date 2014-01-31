@@ -97,8 +97,12 @@ Session Fetcher::login(std::string const &username, std::string const &password,
     return {id, iteration_count};
 }
 
-Blob fetch(Session const &session, WebClient &web_client)
+Blob Fetcher::fetch(Session const &session, WebClient &web_client)
 {
+    auto response = web_client.get("https://lastpass.com/getaccts.php",
+                                   {{"mobile", "1"}, {"hash", "0.0"}},
+                                   {{"PHPSESSID", session.id()}});
+
     return {};
 }
 
