@@ -255,3 +255,12 @@ BOOST_AUTO_TEST_CASE(Fetcher_to_hex)
     for (auto const &i: test_cases)
         BOOST_CHECK_EQUAL(Fetcher::to_hex(i.second), i.first);
 }
+
+BOOST_AUTO_TEST_CASE(Fetcher_decode_base64)
+{
+    BOOST_CHECK(Fetcher::decode_base64("") == std::vector<uint8_t>{});
+    BOOST_CHECK(Fetcher::decode_base64("YQ==") == std::vector<uint8_t>{0x61});
+    BOOST_CHECK(Fetcher::decode_base64("YWI=") == (std::vector<uint8_t>{0x61, 0x62}));
+    BOOST_CHECK(Fetcher::decode_base64("YWJj") == (std::vector<uint8_t>{0x61, 0x62, 0x63}));
+    BOOST_CHECK(Fetcher::decode_base64("YWJjZA==") == (std::vector<uint8_t>{0x61, 0x62, 0x63, 0x64}));
+}

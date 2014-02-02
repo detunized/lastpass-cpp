@@ -27,6 +27,7 @@ public:
     static std::vector<uint8_t> sha256(std::string const &text);
     static std::vector<uint8_t> to_bytes(std::string const &text);
     static std::string to_hex(std::vector<uint8_t> const &bytes);
+    static std::vector<uint8_t> decode_base64(std::string const &base64_text);
 };
 
 }

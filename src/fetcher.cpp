@@ -10,6 +10,7 @@
 #include <openssl/evp.h>
 #include <openssl/sha.h>
 #else
+#include <resolv.h>
 #include <CommonCrypto/CommonDigest.h>
 #include <CommonCrypto/CommonKeyDerivation.h>
 #endif
@@ -197,6 +198,19 @@ std::string Fetcher::to_hex(std::vector<uint8_t> const &bytes)
     }
 
     return hex;
+}
+
+std::vector<uint8_t> Fetcher::decode_base64(std::string const &base64_text)
+{
+#ifdef USE_OPENSSL
+#error Not implemented!
+#else
+    // The size is the upper bound, the actual size could be smaller.
+    // After decoding we need to trim unused space.
+    std::vector<uint8_t> decoded(base64_text.size() * 3 / 4);
+    decoded.resize(b64_pton(base64_text.c_str(), decoded.data(), decoded.size()));
+    return decoded;
+#endif
 }
 
 }

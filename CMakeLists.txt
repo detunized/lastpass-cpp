@@ -15,6 +15,8 @@ find_package(CURL REQUIRED)
 list(APPEND ADDITIONAL_LIBS ${CURL_LIBRARIES})
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    # Need libresov
+    list(APPEND ADDITIONAL_LIBS "resolv")
 else()
     # Need OpenSSL
     find_package(OpenSSL REQUIRED)
