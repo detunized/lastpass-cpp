@@ -27,9 +27,17 @@ std::string const HASH = "7880a04588cfab954aa1a2da98fd9c0d2c6eba4c53e36a94510e6d
 
 BOOST_AUTO_TEST_CASE(Session_getters)
 {
-    Session session("id", 1000);
-    BOOST_CHECK_EQUAL(session.id(), "id");
-    BOOST_CHECK_EQUAL(session.key_iteration_count(), 1000);
+    Session session(SESSION_ID, KEY_ITERATION_COUNT);
+    BOOST_CHECK_EQUAL(session.id(), SESSION_ID);
+    BOOST_CHECK_EQUAL(session.key_iteration_count(), KEY_ITERATION_COUNT);
+}
+
+BOOST_AUTO_TEST_CASE(Blob_getters)
+{
+    std::vector<uint8_t> bytes{1, 2, 3, 4};
+    Blob blob(bytes, KEY_ITERATION_COUNT);
+    BOOST_CHECK(blob.bytes() == bytes);
+    BOOST_CHECK_EQUAL(blob.key_iteration_count(), KEY_ITERATION_COUNT);
 }
 
 BOOST_AUTO_TEST_CASE(Fetcher_login_with_iterations)

@@ -100,10 +100,10 @@ Session Fetcher::login(std::string const &username, std::string const &password,
 Blob Fetcher::fetch(Session const &session, WebClient &web_client)
 {
     auto response = web_client.get("https://lastpass.com/getaccts.php",
-                                   {{"mobile", "1"}, {"hash", "0.0"}},
+                                   {{"mobile", "1"}, {"b64", "1"}, {"hash", "0.0"}},
                                    {{"PHPSESSID", session.id()}});
 
-    return {};
+    return {to_bytes(response), session.key_iteration_count()};
 }
 
 int Fetcher::request_iteration_count(std::string const &username, WebClient &web_client)
