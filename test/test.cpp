@@ -21,7 +21,10 @@ int const KEY_ITERATION_COUNT = 5000;
 
 std::string const LOGIN_URL = "https://lastpass.com/login.php";
 std::string const ITERATIONS_URL = "https://lastpass.com/iterations.php";
+std::string const ACCOUNT_DOWNLOAD_URL = "https://lastpass.com/getaccts.php";
 std::string const HASH = "7880a04588cfab954aa1a2da98fd9c0d2c6eba4c53e36a94510e6dbf30759256";
+std::string const BLOB = "TFBBVgAAAAMxMThB";
+std::vector<uint8_t> const BLOB_BYTES = {'T', 'F', 'B', 'B', 'V', 'g', 'A', 'A', 'A', 'A', 'M', 'x', 'M', 'T', 'h', 'B'};
 
 }
 
@@ -34,9 +37,8 @@ BOOST_AUTO_TEST_CASE(Session_getters)
 
 BOOST_AUTO_TEST_CASE(Blob_getters)
 {
-    std::vector<uint8_t> bytes{1, 2, 3, 4};
-    Blob blob(bytes, KEY_ITERATION_COUNT);
-    BOOST_CHECK(blob.bytes() == bytes);
+    Blob blob(BLOB_BYTES, KEY_ITERATION_COUNT);
+    BOOST_CHECK(blob.bytes() == BLOB_BYTES);
     BOOST_CHECK_EQUAL(blob.key_iteration_count(), KEY_ITERATION_COUNT);
 }
 
@@ -74,6 +76,38 @@ BOOST_AUTO_TEST_CASE(Fetcher_login_with_iterations)
     auto session = Fetcher::login(USERNAME, PASSWORD, KEY_ITERATION_COUNT, mwc);
     BOOST_CHECK_EQUAL(session.id(), SESSION_ID);
     BOOST_CHECK_EQUAL(session.key_iteration_count(), KEY_ITERATION_COUNT);
+}
+
+BOOST_AUTO_TEST_CASE(Fetcher_fetch)
+{
+    // TODO: Remove code duplication!
+
+    class MockWebClient: public WebClient
+    {
+    public:
+        virtual std::string get(std::string const &url, Values const &values, Values const &cookies) override
+        {
+            Values expected_values = {{"mobile", "1"}, {"b64", "1"}, {"hash", "0.0"}};
+            Values expected_cookies = {{"PHPSESSID", SESSION_ID}};
+
+            BOOST_CHECK_EQUAL(url, ACCOUNT_DOWNLOAD_URL);
+            BOOST_CHECK(values == expected_values);
+            BOOST_CHECK(cookies == expected_cookies);
+
+            return BLOB;
+        }
+
+        virtual std::string post(std::string const &url, Values const &values, Values const &cookies) override
+        {
+            BOOST_FAIL("Should not be called");
+            return "";
+        }
+
+    } mwc;
+
+    auto blob = Fetcher::fetch(Session(SESSION_ID, KEY_ITERATION_COUNT), mwc);
+    BOOST_CHECK(blob.bytes() == BLOB_BYTES);
+    BOOST_CHECK_EQUAL(blob.key_iteration_count(), KEY_ITERATION_COUNT);
 }
 
 BOOST_AUTO_TEST_CASE(Fetcher_request_iteration_count)
