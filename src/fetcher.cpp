@@ -208,7 +208,7 @@ std::vector<uint8_t> Fetcher::decode_base64(std::string const &base64_text)
     std::vector<uint8_t> decoded(base64_text.size() * 3 / 4);
 
 #ifdef USE_OPENSSL
-    BIO *context = BIO_push(BIO_new(BIO_f_base64(),
+    BIO *context = BIO_push(BIO_new(BIO_f_base64()),
                             BIO_new_mem_buf((void *)base64_text.c_str(), base64_text.size()));
     BIO_set_flags(context, BIO_FLAGS_BASE64_NO_NL | BIO_FLAGS_MEM_RDONLY);
     size_t actual_size = BIO_read(context, decoded.data(), decoded.size());
