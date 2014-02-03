@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(lastpass)
+project(lastpass-cpp)
 
 # TODO: Do proper feature detection and enable libraries/compilers based on that!
 
