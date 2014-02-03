@@ -28,8 +28,8 @@ std::string const LOGIN_URL = "https://lastpass.com/login.php";
 std::string const ITERATIONS_URL = "https://lastpass.com/iterations.php";
 std::string const ACCOUNT_DOWNLOAD_URL = "https://lastpass.com/getaccts.php";
 std::string const HASH = "7880a04588cfab954aa1a2da98fd9c0d2c6eba4c53e36a94510e6dbf30759256";
-std::string const BLOB = "TFBBVgAAAAMxMThB";
-std::vector<uint8_t> const BLOB_BYTES = {0x4c, 0x50, 0x41, 0x56, 0x00, 0x00, 0x00, 0x03, 0x31, 0x31, 0x38, 0x41};
+std::string const BLOB = "TFBBVgAAAAMxMTg=";
+std::vector<uint8_t> const BLOB_BYTES = {0x4c, 0x50, 0x41, 0x56, 0x00, 0x00, 0x00, 0x03, 0x31, 0x31, 0x38};
 
 }
 
@@ -184,8 +184,8 @@ BOOST_AUTO_TEST_CASE(Fetcher_make_hash)
 
 BOOST_AUTO_TEST_CASE(Parser_extract_chunks)
 {
-    std::stringstream s;
-    BOOST_CHECK(Parser::extract_chunks(s) == Chunks());
+    std::istringstream s(std::string(std::begin(BLOB_BYTES), std::end(BLOB_BYTES)));
+    BOOST_CHECK(Parser::extract_chunks(s) == (Chunks {{'LPAV', {{0x31, 0x31, 0x38}}}}));
 }
 
 BOOST_AUTO_TEST_CASE(crypto_pbkdf2_sha256_short)
