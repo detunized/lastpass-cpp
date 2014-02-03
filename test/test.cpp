@@ -13,6 +13,7 @@
 #include "../src/session.h"
 #include "../src/utils.h"
 
+#define C(dd) (static_cast<char>(0x##dd))
 #define FS(format_string, arguments) (str(boost::format(format_string) % arguments))
 
 using namespace lastpass;
@@ -30,7 +31,7 @@ std::string const ITERATIONS_URL = "https://lastpass.com/iterations.php";
 std::string const ACCOUNT_DOWNLOAD_URL = "https://lastpass.com/getaccts.php";
 std::string const HASH = "7880a04588cfab954aa1a2da98fd9c0d2c6eba4c53e36a94510e6dbf30759256";
 std::string const BLOB = "TFBBVgAAAAMxMTg=";
-std::string const BLOB_BYTES{0x4c, 0x50, 0x41, 0x56, 0x00, 0x00, 0x00, 0x03, 0x31, 0x31, 0x38};
+std::string const BLOB_BYTES {C(4c), C(50), C(41), C(56), C(00), C(00), C(00), C(03), C(31), C(31), C(38)};
 
 }
 
@@ -160,22 +161,22 @@ BOOST_AUTO_TEST_CASE(Fetcher_request_iteration_count)
 BOOST_AUTO_TEST_CASE(Fetcher_make_key)
 {
     std::map<int, std::string> test_cases = {
-        {1,   {0x0b, 0xf0, 0x61, 0xd9, 0x21, 0x96, 0xc4, 0x8f,
-               0x09, 0x0e, 0xee, 0x78, 0x0d, 0xb6, 0xe9, 0x57,
-               0xc2, 0x7d, 0xc1, 0xae, 0xa9, 0x29, 0xb7, 0xac,
-               0x21, 0xbf, 0x4c, 0x01, 0x79, 0x1e, 0x17, 0x76}},
-        {5,   {0xa4, 0x4f, 0x60, 0xa1, 0xac, 0xd2, 0x09, 0x1a,
-               0xa7, 0x5b, 0x07, 0x22, 0xc5, 0x63, 0x38, 0x34,
-               0x72, 0x63, 0x58, 0xcb, 0xc1, 0xe5, 0x3d, 0x79,
-               0x74, 0xc8, 0x5e, 0xea, 0xe8, 0x35, 0xa5, 0x98}},
-        {50,  {0x1b, 0x02, 0x3c, 0xfe, 0x43, 0x72, 0xd4, 0xd8,
-               0xc8, 0x7d, 0xed, 0xd9, 0xd1, 0x50, 0x19, 0x7c,
-               0x5e, 0xfc, 0xf7, 0x7f, 0x14, 0x56, 0xe0, 0xa2,
-               0xeb, 0x10, 0x0b, 0xdc, 0xc2, 0x41, 0xbb, 0x1d}},
-        {500, {0x39, 0xf3, 0x94, 0xbd, 0x59, 0xd0, 0xcc, 0x1e,
-               0x2f, 0xe3, 0xdb, 0x0d, 0x87, 0x8f, 0x8f, 0x77,
-               0x02, 0x05, 0x6f, 0xd1, 0x6b, 0xe7, 0xe8, 0xd5,
-               0x7d, 0x64, 0x53, 0x7f, 0xe1, 0x36, 0x1a, 0x18}},
+        {1,   {C(0b), C(f0), C(61), C(d9), C(21), C(96), C(c4), C(8f),
+               C(09), C(0e), C(ee), C(78), C(0d), C(b6), C(e9), C(57),
+               C(c2), C(7d), C(c1), C(ae), C(a9), C(29), C(b7), C(ac),
+               C(21), C(bf), C(4c), C(01), C(79), C(1e), C(17), C(76)}},
+        {5,   {C(a4), C(4f), C(60), C(a1), C(ac), C(d2), C(09), C(1a),
+               C(a7), C(5b), C(07), C(22), C(c5), C(63), C(38), C(34),
+               C(72), C(63), C(58), C(cb), C(c1), C(e5), C(3d), C(79),
+               C(74), C(c8), C(5e), C(ea), C(e8), C(35), C(a5), C(98)}},
+        {50,  {C(1b), C(02), C(3c), C(fe), C(43), C(72), C(d4), C(d8),
+               C(c8), C(7d), C(ed), C(d9), C(d1), C(50), C(19), C(7c),
+               C(5e), C(fc), C(f7), C(7f), C(14), C(56), C(e0), C(a2),
+               C(eb), C(10), C(0b), C(dc), C(c2), C(41), C(bb), C(1d)}},
+        {500, {C(39), C(f3), C(94), C(bd), C(59), C(d0), C(cc), C(1e),
+               C(2f), C(e3), C(db), C(0d), C(87), C(8f), C(8f), C(77),
+               C(02), C(05), C(6f), C(d1), C(6b), C(e7), C(e8), C(d5),
+               C(7d), C(64), C(53), C(7f), C(e1), C(36), C(1a), C(18)}},
     };
 
     for (auto const &i: test_cases)
@@ -198,15 +199,15 @@ BOOST_AUTO_TEST_CASE(Fetcher_make_hash)
 BOOST_AUTO_TEST_CASE(Parser_extract_chunks)
 {
     std::istringstream s(std::string(std::begin(BLOB_BYTES), std::end(BLOB_BYTES)));
-    BOOST_CHECK(Parser::extract_chunks(s) == (Chunks {{'LPAV', {{0x31, 0x31, 0x38}}}}));
+    BOOST_CHECK(Parser::extract_chunks(s) == (Chunks {{'LPAV', {{C(31), C(31), C(38)}}}}));
 }
 
 BOOST_AUTO_TEST_CASE(crypto_pbkdf2_sha256_short)
 {
-    std::string expected {0x12, 0x0f, 0xb6, 0xcf, 0xfc, 0xf8, 0xb3, 0x2c,
-                          0x43, 0xe7, 0x22, 0x52, 0x56, 0xc4, 0xf8, 0x37,
-                          0xa8, 0x65, 0x48, 0xc9, 0x2c, 0xcc, 0x35, 0x48,
-                          0x08, 0x05, 0x98, 0x7c, 0xb7, 0x0b, 0xe1, 0x7b};
+    std::string expected {C(12), C(0f), C(b6), C(cf), C(fc), C(f8), C(b3), C(2c),
+                          C(43), C(e7), C(22), C(52), C(56), C(c4), C(f8), C(37),
+                          C(a8), C(65), C(48), C(c9), C(2c), C(cc), C(35), C(48),
+                          C(08), C(05), C(98), C(7c), C(b7), C(0b), C(e1), C(7b)};
     auto actual = pbkdf2_sha256("password", "salt", 1, expected.size());
 
     BOOST_CHECK_EQUAL_COLLECTIONS(actual.begin(), actual.end(), expected.begin(), expected.end());
@@ -214,11 +215,11 @@ BOOST_AUTO_TEST_CASE(crypto_pbkdf2_sha256_short)
 
 BOOST_AUTO_TEST_CASE(crypto_pbkdf2_sha256_long)
 {
-    std::string expected {0x34, 0x8c, 0x89, 0xdb, 0xcb, 0xd3, 0x2b, 0x2f,
-                          0x32, 0xd8, 0x14, 0xb8, 0x11, 0x6e, 0x84, 0xcf,
-                          0x2b, 0x17, 0x34, 0x7e, 0xbc, 0x18, 0x00, 0x18,
-                          0x1c, 0x4e, 0x2a, 0x1f, 0xb8, 0xdd, 0x53, 0xe1,
-                          0xc6, 0x35, 0x51, 0x8c, 0x7d, 0xac, 0x47, 0xe9};
+    std::string expected {C(34), C(8c), C(89), C(db), C(cb), C(d3), C(2b), C(2f),
+                          C(32), C(d8), C(14), C(b8), C(11), C(6e), C(84), C(cf),
+                          C(2b), C(17), C(34), C(7e), C(bc), C(18), C(00), C(18),
+                          C(1c), C(4e), C(2a), C(1f), C(b8), C(dd), C(53), C(e1),
+                          C(c6), C(35), C(51), C(8c), C(7d), C(ac), C(47), C(e9)};
     auto actual = pbkdf2_sha256("passwordPASSWORDpassword",
                                 "saltSALTsaltSALTsaltSALTsaltSALTsalt",
                                 4096,
@@ -232,17 +233,17 @@ BOOST_AUTO_TEST_CASE(crypto_sha256)
     std::map<std::string, std::string> const test_cases = {
         {
             "abc",
-            {0xba, 0x78, 0x16, 0xbf, 0x8f, 0x01, 0xcf, 0xea,
-             0x41, 0x41, 0x40, 0xde, 0x5d, 0xae, 0x22, 0x23,
-             0xb0, 0x03, 0x61, 0xa3, 0x96, 0x17, 0x7a, 0x9c,
-             0xb4, 0x10, 0xff, 0x61, 0xf2, 0x00, 0x15, 0xad}
+            {C(ba), C(78), C(16), C(bf), C(8f), C(01), C(cf), C(ea),
+             C(41), C(41), C(40), C(de), C(5d), C(ae), C(22), C(23),
+             C(b0), C(03), C(61), C(a3), C(96), C(17), C(7a), C(9c),
+             C(b4), C(10), C(ff), C(61), C(f2), C(00), C(15), C(ad)}
         },
         {
             "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
-            {0x24, 0x8D, 0x6A, 0x61, 0xD2, 0x06, 0x38, 0xB8,
-             0xE5, 0xC0, 0x26, 0x93, 0x0C, 0x3E, 0x60, 0x39,
-             0xA3, 0x3C, 0xE4, 0x59, 0x64, 0xFF, 0x21, 0x67,
-             0xF6, 0xEC, 0xED, 0xD4, 0x19, 0xDB, 0x06, 0xC1}
+            {C(24), C(8d), C(6a), C(61), C(d2), C(06), C(38), C(b8),
+             C(e5), C(c0), C(26), C(93), C(0c), C(3e), C(60), C(39),
+             C(a3), C(3c), C(e4), C(59), C(64), C(ff), C(21), C(67),
+             C(f6), C(ec), C(ed), C(d4), C(19), C(db), C(06), C(c1)}
         },
     };
 
@@ -254,12 +255,13 @@ BOOST_AUTO_TEST_CASE(utils_to_hex)
 {
     std::map<std::string, std::string> const test_cases = {
         {"", {}},
-        {"00", {0}},
-        {"00ff", {0, 255}},
-        {"00010203040506070809", {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}},
-        {"000102030405060708090a0b0c0d0e0f", {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15}},
-        {"8af633933e96a3c3550c2734bd814195", {0x8a, 0xf6, 0x33, 0x93, 0x3e, 0x96, 0xa3, 0xc3,
-                                              0x55, 0x0c, 0x27, 0x34, 0xbd, 0x81, 0x41, 0x95}},
+        {"00", {C(00)}},
+        {"00ff", {C(00), C(ff)}},
+        {"00010203040506070809", {C(00), C(01), C(02), C(03), C(04), C(05), C(06), C(07), C(08), C(09)}},
+        {"000102030405060708090a0b0c0d0e0f", {C(00), C(01), C(02), C(03), C(04), C(05), C(06), C(07),
+                                              C(08), C(09), C(0a), C(0b), C(0c), C(0d), C(0e), C(0f)}},
+        {"8af633933e96a3c3550c2734bd814195", {C(8a), C(f6), C(33), C(93), C(3e), C(96), C(a3), C(c3),
+                                              C(55), C(0c), C(27), C(34), C(bd), C(81), C(41), C(95)}},
     };
 
     for (auto const &i: test_cases)
@@ -269,8 +271,8 @@ BOOST_AUTO_TEST_CASE(utils_to_hex)
 BOOST_AUTO_TEST_CASE(utils_decode_base64)
 {
     BOOST_CHECK(decode_base64("") == "");
-    BOOST_CHECK(decode_base64("YQ==") == std::string{0x61});
-    BOOST_CHECK(decode_base64("YWI=") == (std::string{0x61, 0x62}));
-    BOOST_CHECK(decode_base64("YWJj") == (std::string{0x61, 0x62, 0x63}));
-    BOOST_CHECK(decode_base64("YWJjZA==") == (std::string{0x61, 0x62, 0x63, 0x64}));
+    BOOST_CHECK(decode_base64("YQ==") == std::string{C(61)});
+    BOOST_CHECK(decode_base64("YWI=") == (std::string{C(61), C(62)}));
+    BOOST_CHECK(decode_base64("YWJj") == (std::string{C(61), C(62), C(63)}));
+    BOOST_CHECK(decode_base64("YWJjZA==") == (std::string{C(61), C(62), C(63), C(64)}));
 }

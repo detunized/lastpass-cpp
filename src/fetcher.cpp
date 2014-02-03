@@ -3,6 +3,8 @@
 #include "utils.h"
 #include "xml.h"
 
+#include <stdexcept>
+
 namespace lastpass
 {
 

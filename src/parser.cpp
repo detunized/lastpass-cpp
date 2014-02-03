@@ -1,9 +1,9 @@
 #include "parser.h"
 
 #include <array>
-#include <arpa/inet.h>
+#include <stdexcept>
 
-#include <iostream>
+#include <arpa/inet.h>
 
 namespace lastpass
 {

@@ -1,6 +1,6 @@
 #include "testdata.h"
 
-#include "../util.h"
+#include "../src/utils.h"
 
 namespace lastpass
 {
@@ -897,7 +897,7 @@ std::string const BLOB_BASE64 =
     "TAAAACwAAAAeNmY2ZTZkNjk2MzcyNmY3MzZmNjY3NDJlNjM2ZjZkAAAAATEAAAAB"
     "MFVSVUwAAAAoAAAAGjY4NjU3MjZmNmI3NTYxNzA3MDJlNjM2ZjZkAAAAATEAAAAB"
     "MFVSVUwAAAAaAAAADDZlNmY3NjJlNzI3NQAAAAExAAAAATBFTkRNAAAAAk9L";
-//std::string const BLOB = decode_base64(BLOB_BASE64);
+std::string const BLOB = decode_base64(BLOB_BASE64);
 
 std::vector<Account> const ACCOUNTS = {
     {"1872745596", "Muller, Morar and Wisoky", "branson_cormier", "8jgLCzQSkB2rTZ1OtF9sNGpc", "http://nienow.net/meagan.greenholt", "three"},
