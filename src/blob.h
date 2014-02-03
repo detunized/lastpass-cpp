@@ -8,13 +8,13 @@ namespace lastpass
 class Blob
 {
 public:
-    Blob(std::vector<uint8_t> const &bytes, int key_iteration_count):
+    Blob(std::string const &bytes, int key_iteration_count):
         bytes_(bytes),
         key_iteration_count_(key_iteration_count)
     {
     }
 
-    std::vector<uint8_t> const &bytes() const
+    std::string const &bytes() const
     {
         return bytes_;
     }
@@ -25,7 +25,7 @@ public:
     }
 
 private:
-    std::vector<uint8_t> bytes_;
+    std::string bytes_;
     int key_iteration_count_;
 };
 

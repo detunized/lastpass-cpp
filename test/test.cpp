@@ -30,7 +30,7 @@ std::string const ITERATIONS_URL = "https://lastpass.com/iterations.php";
 std::string const ACCOUNT_DOWNLOAD_URL = "https://lastpass.com/getaccts.php";
 std::string const HASH = "7880a04588cfab954aa1a2da98fd9c0d2c6eba4c53e36a94510e6dbf30759256";
 std::string const BLOB = "TFBBVgAAAAMxMTg=";
-std::vector<uint8_t> const BLOB_BYTES = {0x4c, 0x50, 0x41, 0x56, 0x00, 0x00, 0x00, 0x03, 0x31, 0x31, 0x38};
+std::string const BLOB_BYTES{0x4c, 0x50, 0x41, 0x56, 0x00, 0x00, 0x00, 0x03, 0x31, 0x31, 0x38};
 
 }
 
@@ -279,9 +279,9 @@ BOOST_AUTO_TEST_CASE(utils_to_hex)
 
 BOOST_AUTO_TEST_CASE(utils_decode_base64)
 {
-    BOOST_CHECK(decode_base64("") == std::vector<uint8_t>{});
-    BOOST_CHECK(decode_base64("YQ==") == std::vector<uint8_t>{0x61});
-    BOOST_CHECK(decode_base64("YWI=") == (std::vector<uint8_t>{0x61, 0x62}));
-    BOOST_CHECK(decode_base64("YWJj") == (std::vector<uint8_t>{0x61, 0x62, 0x63}));
-    BOOST_CHECK(decode_base64("YWJjZA==") == (std::vector<uint8_t>{0x61, 0x62, 0x63, 0x64}));
+    BOOST_CHECK(decode_base64("") == "");
+    BOOST_CHECK(decode_base64("YQ==") == std::string{0x61});
+    BOOST_CHECK(decode_base64("YWI=") == (std::string{0x61, 0x62}));
+    BOOST_CHECK(decode_base64("YWJj") == (std::string{0x61, 0x62, 0x63}));
+    BOOST_CHECK(decode_base64("YWJjZA==") == (std::string{0x61, 0x62, 0x63, 0x64}));
 }
