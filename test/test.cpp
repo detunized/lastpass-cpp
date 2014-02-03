@@ -6,6 +6,7 @@
 
 #include "../src/fetcher.h"
 #include "../src/session.h"
+#include "../src/utils.h"
 
 #define FS(format_string, arguments) (str(boost::format(format_string) % arguments))
 
@@ -183,8 +184,8 @@ BOOST_AUTO_TEST_CASE(Fetcher_pbkdf2_sha256_short)
                                    0x43, 0xe7, 0x22, 0x52, 0x56, 0xc4, 0xf8, 0x37,
                                    0xa8, 0x65, 0x48, 0xc9, 0x2c, 0xcc, 0x35, 0x48,
                                    0x08, 0x05, 0x98, 0x7c, 0xb7, 0x0b, 0xe1, 0x7b};
-    auto actual = Fetcher::pbkdf2_sha256(Fetcher::to_bytes("password"),
-                                         Fetcher::to_bytes("salt"),
+    auto actual = Fetcher::pbkdf2_sha256(utils::to_bytes("password"),
+                                         utils::to_bytes("salt"),
                                          1,
                                          expected.size());
 
@@ -198,8 +199,8 @@ BOOST_AUTO_TEST_CASE(Fetcher_pbkdf2_sha256_long)
                                    0x2b, 0x17, 0x34, 0x7e, 0xbc, 0x18, 0x00, 0x18,
                                    0x1c, 0x4e, 0x2a, 0x1f, 0xb8, 0xdd, 0x53, 0xe1,
                                    0xc6, 0x35, 0x51, 0x8c, 0x7d, 0xac, 0x47, 0xe9};
-    auto actual = Fetcher::pbkdf2_sha256(Fetcher::to_bytes("passwordPASSWORDpassword"),
-                                         Fetcher::to_bytes("saltSALTsaltSALTsaltSALTsaltSALTsalt"),
+    auto actual = Fetcher::pbkdf2_sha256(utils::to_bytes("passwordPASSWORDpassword"),
+                                         utils::to_bytes("saltSALTsaltSALTsaltSALTsaltSALTsalt"),
                                          4096,
                                          expected.size());
 
@@ -229,7 +230,7 @@ BOOST_AUTO_TEST_CASE(Fetcher_sha256)
         BOOST_CHECK(Fetcher::sha256(i.first) == i.second);
 }
 
-BOOST_AUTO_TEST_CASE(Fetcher_to_bytes)
+BOOST_AUTO_TEST_CASE(utils_to_bytes)
 {
     std::map<std::string, std::vector<uint8_t>> const test_cases = {
         {"", {}},
@@ -237,10 +238,10 @@ BOOST_AUTO_TEST_CASE(Fetcher_to_bytes)
     };
 
     for (auto const &i: test_cases)
-        BOOST_CHECK(Fetcher::to_bytes(i.first) == i.second);
+        BOOST_CHECK(utils::to_bytes(i.first) == i.second);
 }
 
-BOOST_AUTO_TEST_CASE(Fetcher_to_hex)
+BOOST_AUTO_TEST_CASE(utils_to_hex)
 {
     std::map<std::string, std::vector<uint8_t>> const test_cases = {
         {"", {}},
@@ -253,14 +254,14 @@ BOOST_AUTO_TEST_CASE(Fetcher_to_hex)
     };
 
     for (auto const &i: test_cases)
-        BOOST_CHECK_EQUAL(Fetcher::to_hex(i.second), i.first);
+        BOOST_CHECK_EQUAL(utils::to_hex(i.second), i.first);
 }
 
-BOOST_AUTO_TEST_CASE(Fetcher_decode_base64)
+BOOST_AUTO_TEST_CASE(utils_decode_base64)
 {
-    BOOST_CHECK(Fetcher::decode_base64("") == std::vector<uint8_t>{});
-    BOOST_CHECK(Fetcher::decode_base64("YQ==") == std::vector<uint8_t>{0x61});
-    BOOST_CHECK(Fetcher::decode_base64("YWI=") == (std::vector<uint8_t>{0x61, 0x62}));
-    BOOST_CHECK(Fetcher::decode_base64("YWJj") == (std::vector<uint8_t>{0x61, 0x62, 0x63}));
-    BOOST_CHECK(Fetcher::decode_base64("YWJjZA==") == (std::vector<uint8_t>{0x61, 0x62, 0x63, 0x64}));
+    BOOST_CHECK(utils::decode_base64("") == std::vector<uint8_t>{});
+    BOOST_CHECK(utils::decode_base64("YQ==") == std::vector<uint8_t>{0x61});
+    BOOST_CHECK(utils::decode_base64("YWI=") == (std::vector<uint8_t>{0x61, 0x62}));
+    BOOST_CHECK(utils::decode_base64("YWJj") == (std::vector<uint8_t>{0x61, 0x62, 0x63}));
+    BOOST_CHECK(utils::decode_base64("YWJjZA==") == (std::vector<uint8_t>{0x61, 0x62, 0x63, 0x64}));
 }
