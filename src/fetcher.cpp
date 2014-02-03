@@ -38,7 +38,7 @@ Blob Fetcher::fetch(Session const &session, WebClient &web_client)
                                    {{"mobile", "1"}, {"b64", "1"}, {"hash", "0.0"}},
                                    {{"PHPSESSID", session.id()}});
 
-    return {to_bytes(response), session.key_iteration_count()};
+    return {decode_base64(response), session.key_iteration_count()};
 }
 
 int Fetcher::request_iteration_count(std::string const &username, WebClient &web_client)
