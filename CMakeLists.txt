@@ -32,6 +32,7 @@ list(APPEND ADDITIONAL_LIBS ${LIBXML2_LIBRARIES})
 add_library(lastpass src/curlwebclient.cpp
                      src/crypto.cpp
                      src/fetcher.cpp
+                     src/parser.cpp
                      src/utils.cpp
                      src/xml.cpp)
 

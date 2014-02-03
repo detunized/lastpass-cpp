@@ -1,3 +1,5 @@
+// TODO: Split this module into separate files!
+
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE lastpass
 #include <boost/test/unit_test.hpp>
@@ -5,6 +7,7 @@
 #include <boost/format.hpp>
 
 #include "../src/fetcher.h"
+#include "../src/parser.h"
 #include "../src/session.h"
 #include "../src/crypto.h"
 #include "../src/utils.h"
@@ -177,6 +180,12 @@ BOOST_AUTO_TEST_CASE(Fetcher_make_hash)
 
     for (auto const &i: test_cases)
         BOOST_CHECK_EQUAL(Fetcher::make_hash("postlass@gmail.com", "pl1234567890", i.first), i.second);
+}
+
+BOOST_AUTO_TEST_CASE(Parser_extract_chunks)
+{
+    std::stringstream s;
+    BOOST_CHECK(Parser::extract_chunks(s) == Chunks());
 }
 
 BOOST_AUTO_TEST_CASE(crypto_pbkdf2_sha256_short)
