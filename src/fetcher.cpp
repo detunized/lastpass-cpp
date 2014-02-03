@@ -1,63 +1,10 @@
 #include "fetcher.h"
 #include "crypto.h"
 #include "utils.h"
-
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#include <libxml/xpath.h>
-
-#include <memory>
-#include <stdexcept>
+#include "xml.h"
 
 namespace lastpass
 {
-
-namespace
-{
-
-class Xml
-{
-public:
-    explicit Xml(std::string const &text): document_(nullptr)
-    {
-        document_ = xmlReadMemory(text.c_str(), text.size(), "", nullptr, 0);
-        if (document_ == nullptr)
-            throw std::runtime_error("Failed to parse XML");
-    }
-
-    ~Xml()
-    {
-        xmlFreeDoc(document_);
-    }
-
-    std::string get_attribute(std::string const &xpath) const
-    {
-        std::unique_ptr<xmlXPathContext, decltype(&xmlXPathFreeContext)>context(
-            xmlXPathNewContext(document_),
-            &xmlXPathFreeContext);
-        if (context.get() == nullptr)
-            return "";
-
-        std::unique_ptr<xmlXPathObject, decltype(&xmlXPathFreeObject)>result(
-            xmlXPathEvalExpression(reinterpret_cast<xmlChar const *>(xpath.c_str()), context.get()),
-            &xmlXPathFreeObject);
-        if (result.get() == nullptr)
-            return "";
-
-        xmlNodeSet const *nodes = result->nodesetval;
-        if (nodes == nullptr ||
-            nodes->nodeNr <= 0 ||
-            nodes->nodeTab[0]->type != XML_ATTRIBUTE_NODE)
-            return "";
-
-        return reinterpret_cast<char const *>(((xmlAttrPtr)nodes->nodeTab[0])->children->content);
-    }
-
-private:
-    xmlDocPtr document_;
-};
-
-}
 
 Session Fetcher::login(std::string const &username, std::string const &password, WebClient &web_client)
 {

@@ -32,7 +32,8 @@ list(APPEND ADDITIONAL_LIBS ${LIBXML2_LIBRARIES})
 add_library(lastpass src/curlwebclient.cpp
                      src/crypto.cpp
                      src/fetcher.cpp
-                     src/utils.cpp)
+                     src/utils.cpp
+                     src/xml.cpp)
 
 # Tests
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
