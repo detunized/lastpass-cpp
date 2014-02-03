@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "config.h"
 
 #ifdef USE_OPENSSL
 #include <openssl/bio.h>
