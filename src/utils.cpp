@@ -17,7 +17,7 @@ Bytes to_bytes(std::string const &text)
     return bytes;
 }
 
-std::string to_hex(Bytes const &bytes)
+std::string to_hex(std::string const &bytes)
 {
     static char const hex_chars[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                        '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -25,7 +25,7 @@ std::string to_hex(Bytes const &bytes)
     std::string hex;
     hex.reserve(bytes.size() * 2);
 
-    for (auto i: bytes)
+    for (unsigned char i: bytes)
     {
         hex += hex_chars[i / 16];
         hex += hex_chars[i % 16];

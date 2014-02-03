@@ -13,47 +13,45 @@
 namespace lastpass
 {
 
-Bytes pbkdf2_sha256(Bytes const &password, Bytes const &salt, int iteration_count, size_t size)
+std::string pbkdf2_sha256(std::string const &password, std::string const &salt, int iteration_count, size_t size)
 {
-    static_assert(sizeof(uint8_t) == sizeof(char), "uint8_t should be the same size as char");
-
-    std::vector<uint8_t> key(size);
+    std::string key(size, '\0');
 
 #ifdef USE_OPENSSL
-    PKCS5_PBKDF2_HMAC(reinterpret_cast<char const *>(password.data()),
+    PKCS5_PBKDF2_HMAC(password.data(),
                       password.size(),
-                      salt.data(),
+                      reinterpret_cast<unsigned char const *>(salt.data()),
                       salt.size(),
                       iteration_count,
                       EVP_sha256(),
                       size,
-                      &key[0]);
+                      reinterpret_cast<unsigned char *>(&key[0]));
 #else
     CCKeyDerivationPBKDF(kCCPBKDF2,
-                         reinterpret_cast<char const *>(password.data()),
+                         password.data(),
                          password.size(),
-                         salt.data(),
+                         reinterpret_cast<uint8_t const *>(salt.data()),
                          salt.size(),
                          kCCPRFHmacAlgSHA256,
                          iteration_count,
-                         &key[0],
+                         reinterpret_cast<uint8_t *>(&key[0]),
                          size);
 #endif
 
     return key;
 }
 
-Bytes sha256(std::string const &text)
+std::string sha256(std::string const &text)
 {
 #ifdef USE_OPENSSL
-    std::vector<uint8_t> hash(SHA256_DIGEST_LENGTH);
+    std::string hash(SHA256_DIGEST_LENGTH, '\0');
     SHA256_CTX sha256;
     SHA256_Init(&sha256);
     SHA256_Update(&sha256, text.c_str(), text.size());
-    SHA256_Final(&hash[0], &sha256);
+    SHA256_Final(reinterpret_cast<unsigned char *>(&hash[0]), &sha256);
 #else
-    std::vector<uint8_t> hash(CC_SHA256_DIGEST_LENGTH);
-    CC_SHA256(text.c_str(), text.size(), &hash[0]);
+    std::string hash(CC_SHA256_DIGEST_LENGTH, '\0');
+    CC_SHA256(text.c_str(), text.size(), reinterpret_cast<unsigned char *>(&hash[0]));
 #endif
 
     return hash;

@@ -18,7 +18,7 @@ public:
     static Blob fetch(Session const &session, WebClient &web_client);
 
     static int request_iteration_count(std::string const &username, WebClient &web_client);
-    static std::vector<uint8_t> make_key(std::string const &username, std::string const &password, int iteration_count);
+    static std::string make_key(std::string const &username, std::string const &password, int iteration_count);
     static std::string make_hash(std::string const &username, std::string const &password, int iteration_count);
 };
 

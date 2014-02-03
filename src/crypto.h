@@ -1,11 +1,11 @@
 #pragma once
 
-#include "utils.h"
+#include <string>
 
 namespace lastpass
 {
 
-Bytes pbkdf2_sha256(Bytes const &password, Bytes const &salt, int iteration_count, size_t size);
-Bytes sha256(std::string const &text);
+std::string pbkdf2_sha256(std::string const &password, std::string const &salt, int iteration_count, size_t size);
+std::string sha256(std::string const &text);
 
 }
