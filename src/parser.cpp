@@ -25,7 +25,7 @@ Chunks Parser::extract_chunks(std::istream &stream)
     return chunks;
 }
 
-std::pair<ChunkId, Bytes> Parser::read_chunk(std::istream &stream)
+std::pair<ChunkId, std::string> Parser::read_chunk(std::istream &stream)
 {
     // LastPass blob chunk is made up of 4-byte ID, big endian 4-byte size and payload of that size
     // Example:
@@ -69,10 +69,10 @@ size_t Parser::read_size(std::istream &stream)
     return htonl(*reinterpret_cast<uint32_t const *>(buffer.data()));
 }
 
-Bytes Parser::read_payload(std::istream &stream, size_t size)
+std::string Parser::read_payload(std::istream &stream, size_t size)
 {
-    Bytes buffer(size);
-    if (!stream.read(reinterpret_cast<char *>(buffer.data()), size))
+    std::string buffer(size, '\0');
+    if (!stream.read(&buffer[0], size))
         throw std::runtime_error("Failed to read payload");
 
     return buffer;

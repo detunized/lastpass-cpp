@@ -250,17 +250,6 @@ BOOST_AUTO_TEST_CASE(crypto_sha256)
         BOOST_CHECK(sha256(i.first) == i.second);
 }
 
-BOOST_AUTO_TEST_CASE(utils_to_bytes)
-{
-    std::map<std::string, std::vector<uint8_t>> const test_cases = {
-        {"", {}},
-        {"Hello, UTF-8!", {0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x55, 0x54, 0x46, 0x2d, 0x38, 0x21}},
-    };
-
-    for (auto const &i: test_cases)
-        BOOST_CHECK(to_bytes(i.first) == i.second);
-}
-
 BOOST_AUTO_TEST_CASE(utils_to_hex)
 {
     std::map<std::string, std::string> const test_cases = {

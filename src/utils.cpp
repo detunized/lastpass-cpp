@@ -3,19 +3,13 @@
 
 #ifdef USE_OPENSSL
 #include <openssl/bio.h>
+#include <openssl/evp.h>
 #else
 #include <resolv.h>
 #endif
 
 namespace lastpass
 {
-
-Bytes to_bytes(std::string const &text)
-{
-    std::vector<uint8_t> bytes(text.size());
-    std::copy(text.begin(), text.end(), bytes.begin());
-    return bytes;
-}
 
 std::string to_hex(std::string const &bytes)
 {
