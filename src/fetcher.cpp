@@ -99,7 +99,7 @@ Blob Fetcher::fetch(Session const &session, WebClient &web_client)
                                    {{"mobile", "1"}, {"b64", "1"}, {"hash", "0.0"}},
                                    {{"PHPSESSID", session.id()}});
 
-    return {utils::to_bytes(response), session.key_iteration_count()};
+    return {to_bytes(response), session.key_iteration_count()};
 }
 
 int Fetcher::request_iteration_count(std::string const &username, WebClient &web_client)
@@ -111,15 +111,15 @@ std::vector<uint8_t> Fetcher::make_key(std::string const &username, std::string 
 {
     return iteration_count == 1
         ? sha256(username + password)
-        : pbkdf2_sha256(utils::to_bytes(password), utils::to_bytes(username), iteration_count, 32);
+        : pbkdf2_sha256(to_bytes(password), to_bytes(username), iteration_count, 32);
 }
 
 std::string Fetcher::make_hash(std::string const &username, std::string const &password, int iteration_count)
 {
     auto key = make_key(username, password, iteration_count);
     return iteration_count == 1
-        ? utils::to_hex(sha256(utils::to_hex(key) + password))
-        : utils::to_hex(pbkdf2_sha256(key, utils::to_bytes(password), 1, 32));
+        ? to_hex(sha256(to_hex(key) + password))
+        : to_hex(pbkdf2_sha256(key, to_bytes(password), 1, 32));
 }
 
 std::vector<uint8_t> Fetcher::pbkdf2_sha256(std::vector<uint8_t> const &password,

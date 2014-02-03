@@ -9,9 +9,6 @@
 namespace lastpass
 {
 
-namespace utils
-{
-
 Bytes to_bytes(std::string const &text)
 {
     std::vector<uint8_t> bytes(text.size());
@@ -54,8 +51,6 @@ Bytes decode_base64(std::string const &base64_text)
 
     decoded.resize(actual_size);
     return decoded;
-}
-
 }
 
 }
