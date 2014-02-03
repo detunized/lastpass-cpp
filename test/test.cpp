@@ -6,10 +6,11 @@
 
 #include <boost/format.hpp>
 
+#include "../src/account.h"
+#include "../src/crypto.h"
 #include "../src/fetcher.h"
 #include "../src/parser.h"
 #include "../src/session.h"
-#include "../src/crypto.h"
 #include "../src/utils.h"
 
 #define FS(format_string, arguments) (str(boost::format(format_string) % arguments))
@@ -31,6 +32,18 @@ std::string const HASH = "7880a04588cfab954aa1a2da98fd9c0d2c6eba4c53e36a94510e6d
 std::string const BLOB = "TFBBVgAAAAMxMTg=";
 std::vector<uint8_t> const BLOB_BYTES = {0x4c, 0x50, 0x41, 0x56, 0x00, 0x00, 0x00, 0x03, 0x31, 0x31, 0x38};
 
+}
+
+BOOST_AUTO_TEST_CASE(Account_getters)
+{
+    Account account("id", "name", "username", "password", "url", "group");
+
+    BOOST_CHECK_EQUAL(account.id(), "id");
+    BOOST_CHECK_EQUAL(account.name(), "name");
+    BOOST_CHECK_EQUAL(account.username(), "username");
+    BOOST_CHECK_EQUAL(account.password(), "password");
+    BOOST_CHECK_EQUAL(account.url(), "url");
+    BOOST_CHECK_EQUAL(account.group(), "group");
 }
 
 BOOST_AUTO_TEST_CASE(Session_getters)

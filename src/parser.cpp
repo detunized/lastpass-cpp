@@ -39,6 +39,18 @@ std::pair<ChunkId, Bytes> Parser::read_chunk(std::istream &stream)
     return std::make_pair(id, payload);
 }
 
+std::string Parser::read_item(std::istream &stream)
+{
+    // An item in an itemized chunk is made up of the big endian size and the payload of that size
+    // Example:
+    //   0000: 4
+    //   0004: 0xDE 0xAD 0xBE 0xEF
+    //   0008: --- Next item ---
+
+    auto payload = read_payload(stream, read_size(stream));
+    return {std::begin(payload), std::end(payload)};
+}
+
 ChunkId Parser::read_id(std::istream &stream)
 {
     std::array<char, sizeof(ChunkId)> buffer;
