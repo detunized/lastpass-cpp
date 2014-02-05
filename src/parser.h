@@ -20,6 +20,7 @@ public:
     static Chunks extract_chunks(std::istream &stream, Filter const &filter = Filter());
     static std::pair<ChunkId, std::string> read_chunk(std::istream &stream);
     static std::string read_item(std::istream &stream);
+    static void skip_item(std::istream &stream);
     static ChunkId read_id(std::istream &stream);
     static size_t read_size(std::istream &stream);
     static std::string read_payload(std::istream &stream, size_t size);

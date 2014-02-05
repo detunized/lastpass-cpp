@@ -52,6 +52,13 @@ std::string Parser::read_item(std::istream &stream)
     return {std::begin(payload), std::end(payload)};
 }
 
+void Parser::skip_item(std::istream &stream)
+{
+    auto size = read_size(stream);
+    if (!stream.seekg(size, std::ios_base::cur))
+        throw std::runtime_error("Failed to skip chunk");
+}
+
 ChunkId Parser::read_id(std::istream &stream)
 {
     std::array<char, sizeof(ChunkId)> buffer;

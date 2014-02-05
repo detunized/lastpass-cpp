@@ -14,9 +14,9 @@ Account Account::parse(std::string const &bytes)
     auto name = Parser::read_item(s);
     auto group = Parser::read_item(s);
     auto url = Parser::read_item(s);
-    Parser::read_item(s);
-    Parser::read_item(s);
-    Parser::read_item(s);
+    Parser::skip_item(s);
+    Parser::skip_item(s);
+    Parser::skip_item(s);
     auto username = Parser::read_item(s);
     auto password = Parser::read_item(s);
 
