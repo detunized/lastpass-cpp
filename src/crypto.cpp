@@ -6,6 +6,7 @@
 #include <openssl/evp.h>
 #include <openssl/sha.h>
 #else
+#include <CommonCrypto/CommonCryptor.h>
 #include <CommonCrypto/CommonDigest.h>
 #include <CommonCrypto/CommonKeyDerivation.h>
 #endif
@@ -56,5 +57,47 @@ std::string sha256(std::string const &text)
 
     return hash;
 }
+
+std::string decrypt_aes256(std::string const &data,
+                           std::string const &encryption_key,
+                           CipherMode mode,
+                           std::string const &iv)
+{
+    std::string decrypted(data.size(), '\0');
+
+#ifdef USE_OPENSSL
+#else
+    CCOptions mode_option = 0;
+    switch (mode)
+    {
+    case CipherMode::CBC:
+        mode_option = 0;
+        break;
+    case CipherMode::ECB:
+        mode_option = kCCOptionECBMode;
+        break;
+    default:
+        throw std::runtime_error("Invalid cipher mode");
+    }
+
+    size_t bytes_decrypted = 0;
+    CCCryptorStatus status = CCCrypt(kCCDecrypt,
+                                     kCCAlgorithmAES128,
+                                     kCCOptionPKCS7Padding | mode_option,
+                                     encryption_key.data(),
+                                     kCCKeySizeAES256,
+                                     iv.data(),
+                                     data.data(),
+                                     data.size(),
+                                     &decrypted[0],
+                                     decrypted.size(),
+                                     &bytes_decrypted);
+
+    decrypted.resize(bytes_decrypted);
+#endif
+
+    return decrypted;
+}
+
 
 }
