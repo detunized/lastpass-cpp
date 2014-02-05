@@ -12,7 +12,7 @@ Chunks Parser::extract_chunks(std::istream &stream)
 {
     Chunks chunks;
 
-    // Need to do this get/unget fucky voodoo to detect EOF early.
+    // Need to do this get/unget funky voodoo to detect EOF early.
     char c;
     while (stream.get(c))
     {
