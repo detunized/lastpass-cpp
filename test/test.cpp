@@ -210,6 +210,25 @@ BOOST_AUTO_TEST_CASE(Parser_extract_chunks_with_filter)
     BOOST_CHECK(Parser::extract_chunks(s, {'LPAV'}) == (Chunks {{'LPAV', {{C(31), C(31), C(38)}}}}));
 }
 
+BOOST_AUTO_TEST_CASE(Parser_extract_chunks_accounts)
+{
+    std::istringstream s(test::BLOB);
+    auto chunks = Parser::extract_chunks(s, {'ACCT'});
+    BOOST_CHECK_EQUAL(chunks.size(), 1);
+
+    for (auto const &i: chunks['ACCT'])
+    {
+        auto a = Account::parse(i);
+
+        // TODO: Verify the actual data
+        BOOST_CHECK(a.id() != "");
+        BOOST_CHECK(a.name() != "");
+        BOOST_CHECK(a.username() != "");
+        BOOST_CHECK(a.password() != "");
+        BOOST_CHECK(a.url() != "");
+    }
+}
+
 BOOST_AUTO_TEST_CASE(crypto_pbkdf2_sha256_short)
 {
     std::string expected {C(12), C(0f), C(b6), C(cf), C(fc), C(f8), C(b3), C(2c),
