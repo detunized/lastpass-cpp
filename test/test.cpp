@@ -233,6 +233,78 @@ BOOST_AUTO_TEST_CASE(Parser_extract_chunks_accounts)
     }
 }
 
+BOOST_AUTO_TEST_CASE(Parser_decrypt_aes256_ecb_plain)
+{
+    std::map<std::string, std::string> const test_cases
+    {
+        {"", ""},
+        {"0123456789", {C(f2), C(61), C(f1), C(20), C(0f), C(2b), C(ba), C(5e),
+                        C(9e), C(ab), C(bd), C(9a), C(fc), C(6a), C(b6), C(8b)}},
+        {"All your base are belong to us", {C(04), C(d8), C(5d), C(dd), C(0d), C(d9), C(54), C(e0),
+                                            C(f1), C(93), C(d7), C(34), C(0b), C(bf), C(3c), C(35),
+                                            C(43), C(d3), C(21), C(f6), C(27), C(66), C(ec), C(57),
+                                            C(7e), C(48), C(21), C(b4), C(c2), C(7c), C(8d), C(53)}},
+    };
+
+    for (auto const &i: test_cases)
+        BOOST_CHECK_EQUAL(Parser::decrypt_aes256_ecb_plain(i.second, ENCRYPTION_KEY), i.first);
+}
+
+BOOST_AUTO_TEST_CASE(Parser_decrypt_aes256_ecb_base64)
+{
+    std::map<std::string, std::string> const test_cases
+    {
+        {"", ""},
+        {"0123456789", "8mHxIA8rul6eq72a/Gq2iw=="},
+        {"All your base are belong to us", "BNhd3Q3ZVODxk9c0C788NUPTIfYnZuxXfkghtMJ8jVM="},
+    };
+
+    for (auto const &i: test_cases)
+        BOOST_CHECK_EQUAL(Parser::decrypt_aes256_ecb_base64(i.second, ENCRYPTION_KEY), i.first);
+}
+
+BOOST_AUTO_TEST_CASE(Parser_decrypt_aes256_cbc_plain)
+{
+    std::map<std::string, std::string> const test_cases
+    {
+        {
+            "0123456789",
+            {C(21), C(0f), C(a1), C(88), C(8c), C(b4), C(bc), C(61),
+             C(b8), C(b2), C(bb), C(07), C(99), C(70), C(a1), C(7b),
+             C(77), C(a1), C(59), C(cf), C(eb), C(60), C(f9), C(df),
+             C(8b), C(2a), C(8e), C(1b), C(c8), C(7b), C(f0), C(37),
+             C(57)}
+        },
+        {
+            "All your base are belong to us",
+            {C(21), C(ca), C(24), C(0d), C(69), C(a3), C(3a), C(42),
+             C(ad), C(2e), C(96), C(5e), C(85), C(62), C(8b), C(eb),
+             C(ae), C(ba), C(52), C(3e), C(9f), C(35), C(73), C(e9),
+             C(5f), C(a9), C(4b), C(5a), C(5a), C(2e), C(fb), C(52),
+             C(eb), C(c1), C(bf), C(83), C(df), C(29), C(8f), C(e8),
+             C(10), C(30), C(77), C(a0), C(b4), C(4c), C(1d), C(e1),
+             C(48)}
+        }
+    };
+
+    for (auto const &i: test_cases)
+        BOOST_CHECK_EQUAL(Parser::decrypt_aes256_cbc_plain(i.second, ENCRYPTION_KEY), i.first);
+}
+
+BOOST_AUTO_TEST_CASE(Parser_decrypt_aes256_cbc_base64)
+{
+    std::map<std::string, std::string> const test_cases
+    {
+        {"0123456789",
+         "!6TZb9bbrqpocMaNgFjrhjw==|f7RcJ7UowesqGk+um+P5ug=="},
+        {"All your base are belong to us",
+         "!YFuiAVZgOD2K+s6y8yaMOw==|TZ1+if9ofqRKTatyUaOnfudletslMJ/RZyUwJuR/+aI="},
+    };
+
+    for (auto const &i: test_cases)
+        BOOST_CHECK_EQUAL(Parser::decrypt_aes256_cbc_base64(i.second, ENCRYPTION_KEY), i.first);
+}
+
 BOOST_AUTO_TEST_CASE(crypto_pbkdf2_sha256_short)
 {
     std::string expected {C(12), C(0f), C(b6), C(cf), C(fc), C(f8), C(b3), C(2c),

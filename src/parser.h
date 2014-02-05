@@ -24,6 +24,13 @@ public:
     static ChunkId read_id(std::istream &stream);
     static size_t read_size(std::istream &stream);
     static std::string read_payload(std::istream &stream, size_t size);
+
+    // AES256
+    static std::string decrypt_aes256(std::string const &data, std::string const &encryption_key);
+    static std::string decrypt_aes256_ecb_plain(std::string const &data, std::string const &encryption_key);
+    static std::string decrypt_aes256_ecb_base64(std::string const &data, std::string const &encryption_key);
+    static std::string decrypt_aes256_cbc_plain(std::string const &data, std::string const &encryption_key);
+    static std::string decrypt_aes256_cbc_base64(std::string const &data, std::string const &encryption_key);
 };
 
 }

@@ -1,4 +1,6 @@
 #include "parser.h"
+#include "crypto.h"
+#include "utils.h"
 
 #include <array>
 #include <stdexcept>
@@ -85,5 +87,62 @@ std::string Parser::read_payload(std::istream &stream, size_t size)
 
     return buffer;
 }
+
+std::string Parser::decrypt_aes256(std::string const &data, std::string const &encryption_key)
+{
+    auto size = data.size();
+    auto size16 = size % 16;
+    auto size64 = size % 64;
+
+    if (size == 0)
+        return {};
+    else if (size16 == 0)
+        return decrypt_aes256_ecb_plain(data, encryption_key);
+    else if (size64 == 0 || size64 == 24 || size64 == 44)
+        return decrypt_aes256_ecb_base64(data, encryption_key);
+    else if (size16 == 1)
+        return decrypt_aes256_cbc_plain(data, encryption_key);
+    else if (size64 == 6 || size64 == 26 || size64 == 50)
+        return decrypt_aes256_cbc_base64(data, encryption_key);
+
+    throw std::runtime_error("Input doesn't seem to be AES-256 encrypted");
+}
+
+std::string Parser::decrypt_aes256_ecb_plain(std::string const &data,
+                                             std::string const &encryption_key)
+{
+    return lastpass::decrypt_aes256(data,
+                                    encryption_key,
+                                    CipherMode::ECB,
+                                    {});
+}
+
+std::string Parser::decrypt_aes256_ecb_base64(std::string const &data,
+                                              std::string const &encryption_key)
+{
+    return lastpass::decrypt_aes256(decode_base64(data),
+                                    encryption_key,
+                                    CipherMode::ECB,
+                                    {});
+}
+
+std::string Parser::decrypt_aes256_cbc_plain(std::string const &data,
+                                             std::string const &encryption_key)
+{
+    return lastpass::decrypt_aes256(data.substr(17),
+                                    encryption_key,
+                                    CipherMode::CBC,
+                                    data.substr(1, 16));
+}
+
+std::string Parser::decrypt_aes256_cbc_base64(std::string const &data,
+                                              std::string const &encryption_key)
+{
+    return lastpass::decrypt_aes256(decode_base64(data.substr(26)),
+                                    encryption_key,
+                                    CipherMode::CBC,
+                                    decode_base64(data.substr(1, 24)));
+}
+
 
 }
