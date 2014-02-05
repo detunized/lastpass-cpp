@@ -1,10 +1,6 @@
 // TODO: Split this module into separate files!
 
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE lastpass
-#include <boost/test/unit_test.hpp>
-
-#include <boost/format.hpp>
+#include "testdata.h"
 
 #include "../src/account.h"
 #include "../src/crypto.h"
@@ -12,6 +8,12 @@
 #include "../src/parser.h"
 #include "../src/session.h"
 #include "../src/utils.h"
+
+#include <boost/format.hpp>
+
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MODULE lastpass
+#include <boost/test/unit_test.hpp>
 
 #define C(dd) (static_cast<char>(0x##dd))
 #define FS(format_string, arguments) (str(boost::format(format_string) % arguments))
@@ -200,6 +202,12 @@ BOOST_AUTO_TEST_CASE(Parser_extract_chunks)
 {
     std::istringstream s(std::string(std::begin(BLOB_BYTES), std::end(BLOB_BYTES)));
     BOOST_CHECK(Parser::extract_chunks(s) == (Chunks {{'LPAV', {{C(31), C(31), C(38)}}}}));
+}
+
+BOOST_AUTO_TEST_CASE(Parser_extract_chunks_with_filter)
+{
+    std::istringstream s(std::string(std::begin(BLOB_BYTES), std::end(BLOB_BYTES)));
+    BOOST_CHECK(Parser::extract_chunks(s, {'LPAV'}) == (Chunks {{'LPAV', {{C(31), C(31), C(38)}}}}));
 }
 
 BOOST_AUTO_TEST_CASE(crypto_pbkdf2_sha256_short)

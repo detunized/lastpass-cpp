@@ -8,7 +8,7 @@
 namespace lastpass
 {
 
-Chunks Parser::extract_chunks(std::istream &stream)
+Chunks Parser::extract_chunks(std::istream &stream, std::set<ChunkId> const &filter)
 {
     Chunks chunks;
 
@@ -19,7 +19,8 @@ Chunks Parser::extract_chunks(std::istream &stream)
         stream.unget();
 
         auto id_chunk = read_chunk(stream);
-        chunks[id_chunk.first].push_back(id_chunk.second);
+        if (filter.empty() || filter.count(id_chunk.first) > 0)
+            chunks[id_chunk.first].push_back(id_chunk.second);
     }
 
     return chunks;
