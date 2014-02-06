@@ -1,5 +1,6 @@
 #include "crypto.h"
 #include "config.h"
+#include "utils.h"
 
 #include <stdexcept>
 
@@ -65,76 +66,86 @@ std::string decrypt_aes256(std::string const &data,
                            CipherMode mode,
                            std::string const &iv)
 {
+    if (data.empty())
+        return {};
+
     std::string decrypted(data.size(), '\0');
 
 #ifdef USE_OPENSSL
+    EVP_CIPHER const *cipher = nullptr;
+    switch (mode)
     {
-        EVP_CIPHER const *cipher = nullptr;
-        switch (mode)
-        {
-        case CipherMode::CBC:
-            cipher = EVP_aes_256_cbc();
-            break;
-        case CipherMode::ECB:
-            cipher = EVP_aes_256_ecb();
-            break;
-        default:
-            throw std::runtime_error("Invalid cipher mode");
-        }
+    case CipherMode::CBC:
+        cipher = EVP_aes_256_cbc();
+        break;
+    case CipherMode::ECB:
+        cipher = EVP_aes_256_ecb();
+        break;
+    default:
+        throw std::runtime_error("Invalid cipher mode");
+    }
 
-        EVP_CIPHER_CTX context;
-        EVP_CIPHER_CTX_init(&context);
-        EVP_DecryptInit(&context,
-                        cipher,
-                        reinterpret_cast<unsigned char const *>(encryption_key.data()),
-                        reinterpret_cast<unsigned char const *>(iv.data()));
+    EVP_CIPHER_CTX context;
 
-        int decrypted_size = 0;
-        EVP_DecryptUpdate(&context,
-                          reinterpret_cast<unsigned char *>(&decrypted[0]),
-                          &decrypted_size,
-                          reinterpret_cast<unsigned char const *>(data.data()),
-                          data.size());
-
-        int final_size = 0;
-        EVP_DecryptFinal(&context,
-                         reinterpret_cast<unsigned char *>(&decrypted[decrypted_size]),
-                         &final_size);
-
+    EVP_CIPHER_CTX_init(&context);
+    AtExit relese_context([&](){
         EVP_CIPHER_CTX_cleanup(&context);
+    });
 
-        decrypted.resize(decrypted_size + final_size);
-    }
+    EVP_DecryptInit(&context,
+                    cipher,
+                    reinterpret_cast<unsigned char const *>(encryption_key.data()),
+                    reinterpret_cast<unsigned char const *>(iv.data()));
+
+    int decrypted_size = 0;
+    auto status = EVP_DecryptUpdate(&context,
+                                    reinterpret_cast<unsigned char *>(&decrypted[0]),
+                                    &decrypted_size,
+                                    reinterpret_cast<unsigned char const *>(data.data()),
+                                    data.size());
+    if (!status)
+        throw std::runtime_error("Decryption failed: (EVP_DecryptUpdate failed)");
+
+    int final_size = 0;
+    status = EVP_DecryptFinal(&context,
+                              reinterpret_cast<unsigned char *>(&decrypted[decrypted_size]),
+                              &final_size);
+
+    if (!status)
+        throw std::runtime_error("Decryption failed: (EVP_DecryptFinal failed)");
+
+    decrypted.resize(decrypted_size + final_size);
 #else
+    CCOptions mode_option = 0;
+    switch (mode)
     {
-        CCOptions mode_option = 0;
-        switch (mode)
-        {
-        case CipherMode::CBC:
-            mode_option = 0;
-            break;
-        case CipherMode::ECB:
-            mode_option = kCCOptionECBMode;
-            break;
-        default:
-            throw std::runtime_error("Invalid cipher mode");
-        }
-
-        size_t decrypted_size = 0;
-        CCCryptorStatus status = CCCrypt(kCCDecrypt,
-                                         kCCAlgorithmAES128,
-                                         kCCOptionPKCS7Padding | mode_option,
-                                         encryption_key.data(),
-                                         kCCKeySizeAES256,
-                                         iv.data(),
-                                         data.data(),
-                                         data.size(),
-                                         &decrypted[0],
-                                         decrypted.size(),
-                                         &decrypted_size);
-
-        decrypted.resize(decrypted_size);
+    case CipherMode::CBC:
+        mode_option = 0;
+        break;
+    case CipherMode::ECB:
+        mode_option = kCCOptionECBMode;
+        break;
+    default:
+        throw std::runtime_error("Invalid cipher mode");
     }
+
+    size_t decrypted_size = 0;
+    auto status = CCCrypt(kCCDecrypt,
+                          kCCAlgorithmAES128,
+                          kCCOptionPKCS7Padding | mode_option,
+                          encryption_key.data(),
+                          kCCKeySizeAES256,
+                          iv.data(),
+                          data.data(),
+                          data.size(),
+                          &decrypted[0],
+                          decrypted.size(),
+                          &decrypted_size);
+
+    if (status != kCCSuccess)
+        throw std::runtime_error("Decryption failed: (CCCrypt failed)");
+
+    decrypted.resize(decrypted_size);
 #endif
 
     return decrypted;
