@@ -1,6 +1,9 @@
 #include "utils.h"
 #include "config.h"
 
+#include <cctype>
+#include <stdexcept>
+
 #ifdef USE_OPENSSL
 #include <openssl/bio.h>
 #include <openssl/evp.h>
@@ -26,6 +29,34 @@ std::string to_hex(std::string const &bytes)
     }
 
     return hex;
+}
+
+std::string decode_hex(std::string const &hex_text)
+{
+    size_t size = hex_text.size();
+    if (size % 2 != 0)
+        throw std::runtime_error("Input length must be multple of 2");
+
+    std::string decoded(size / 2, '\0');
+    for (size_t i = 0; i < size / 2; ++i)
+    {
+        int b = 0;
+        for (int j = 0; j < 2; ++j)
+        {
+            b <<= 4;
+            char c = std::tolower(hex_text[i * 2 + j]);
+            if (c >= '0' && c <= '9')
+                b |= c - '0';
+            else if (c >= 'a' && c <= 'f')
+                b |= c - 'a' + 10;
+            else
+                throw std::runtime_error("Input contains invalid characters");
+        }
+
+        decoded[i] = static_cast<char>(b);
+    }
+
+    return decoded;
 }
 
 std::string decode_base64(std::string const &base64_text)

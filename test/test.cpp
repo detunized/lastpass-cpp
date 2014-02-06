@@ -10,6 +10,7 @@
 #include "../src/utils.h"
 
 #include <boost/format.hpp>
+#include <boost/algorithm/string.hpp>
 
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE lastpass
@@ -38,6 +39,17 @@ std::string const ENCRYPTION_KEY {C(39), C(f3), C(94), C(bd), C(59), C(d0), C(cc
                                   C(2f), C(e3), C(db), C(0d), C(87), C(8f), C(8f), C(77),
                                   C(02), C(05), C(6f), C(d1), C(6b), C(e7), C(e8), C(d5),
                                   C(7d), C(64), C(53), C(7f), C(e1), C(36), C(1a), C(18)};
+
+std::map<std::string, std::string> const HEX_TO_RAW = {
+    {"", {}},
+    {"00", {C(00)}},
+    {"00ff", {C(00), C(ff)}},
+    {"00010203040506070809", {C(00), C(01), C(02), C(03), C(04), C(05), C(06), C(07), C(08), C(09)}},
+    {"000102030405060708090a0b0c0d0e0f", {C(00), C(01), C(02), C(03), C(04), C(05), C(06), C(07),
+                                          C(08), C(09), C(0a), C(0b), C(0c), C(0d), C(0e), C(0f)}},
+    {"8af633933e96a3c3550c2734bd814195", {C(8a), C(f6), C(33), C(93), C(3e), C(96), C(a3), C(c3),
+                                          C(55), C(0c), C(27), C(34), C(bd), C(81), C(41), C(95)}},
+};
 
 }
 
@@ -406,19 +418,27 @@ BOOST_AUTO_TEST_CASE(crypto_decrypt_aes256_cbc)
 
 BOOST_AUTO_TEST_CASE(utils_to_hex)
 {
-    std::map<std::string, std::string> const test_cases = {
-        {"", {}},
-        {"00", {C(00)}},
-        {"00ff", {C(00), C(ff)}},
-        {"00010203040506070809", {C(00), C(01), C(02), C(03), C(04), C(05), C(06), C(07), C(08), C(09)}},
-        {"000102030405060708090a0b0c0d0e0f", {C(00), C(01), C(02), C(03), C(04), C(05), C(06), C(07),
-                                              C(08), C(09), C(0a), C(0b), C(0c), C(0d), C(0e), C(0f)}},
-        {"8af633933e96a3c3550c2734bd814195", {C(8a), C(f6), C(33), C(93), C(3e), C(96), C(a3), C(c3),
-                                              C(55), C(0c), C(27), C(34), C(bd), C(81), C(41), C(95)}},
-    };
-
-    for (auto const &i: test_cases)
+    for (auto const &i: HEX_TO_RAW)
         BOOST_CHECK_EQUAL(to_hex(i.second), i.first);
+}
+
+BOOST_AUTO_TEST_CASE(utils_decode_hex)
+{
+    for (auto const &i: HEX_TO_RAW)
+    {
+        BOOST_CHECK_EQUAL(decode_hex(i.first), i.second);
+        BOOST_CHECK_EQUAL(decode_hex(boost::to_upper_copy(i.first)), i.second);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(utils_decode_hex_throws_on_odd_length)
+{
+    BOOST_CHECK_THROW(decode_hex("0"), std::runtime_error);
+}
+
+BOOST_AUTO_TEST_CASE(utils_decode_hex_throws_on_non_hex_characters)
+{
+    BOOST_CHECK_THROW(decode_hex("xz"), std::runtime_error);
 }
 
 BOOST_AUTO_TEST_CASE(utils_decode_base64)
