@@ -1,5 +1,7 @@
 #pragma once
 
+#include "account.h"
+
 #include <istream>
 #include <map>
 #include <set>
@@ -31,6 +33,9 @@ public:
     static std::string decrypt_aes256_ecb_base64(std::string const &data, std::string const &encryption_key);
     static std::string decrypt_aes256_cbc_plain(std::string const &data, std::string const &encryption_key);
     static std::string decrypt_aes256_cbc_base64(std::string const &data, std::string const &encryption_key);
+
+    // Chunk parsers
+    static Account parse_account(std::string const &chunk, std::string const &encryption_key);
 };
 
 }

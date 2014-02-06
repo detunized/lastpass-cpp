@@ -29,8 +29,7 @@ include_directories(${LIBXML2_INCLUDE_DIR})
 list(APPEND ADDITIONAL_LIBS ${LIBXML2_LIBRARIES})
 
 # LastPass library
-add_library(lastpass src/account.cpp
-                     src/curlwebclient.cpp
+add_library(lastpass src/curlwebclient.cpp
                      src/crypto.cpp
                      src/fetcher.cpp
                      src/parser.cpp

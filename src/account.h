@@ -8,8 +8,6 @@ namespace lastpass
 class Account
 {
 public:
-    static Account parse(std::string const &bytes);
-
     Account(std::string &&id,
             std::string &&name,
             std::string &&username,

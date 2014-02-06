@@ -219,17 +219,20 @@ BOOST_AUTO_TEST_CASE(Parser_extract_chunks_accounts)
     std::istringstream s(test::BLOB);
     auto chunks = Parser::extract_chunks(s, {'ACCT'});
     BOOST_CHECK_EQUAL(chunks.size(), 1);
+    BOOST_CHECK_EQUAL(chunks['ACCT'].size(), test::ACCOUNTS.size());
 
-    for (auto const &i: chunks['ACCT'])
+    auto const &accounts = chunks['ACCT'];
+    for (size_t i = 0, size = accounts.size(); i < size; ++i)
     {
-        auto a = Account::parse(i);
+        auto account = Parser::parse_account(accounts[i], test::ENCRYPTION_KEY);
+        auto const &expected = test::ACCOUNTS[i];
 
-        // TODO: Verify the actual data
-        BOOST_CHECK(a.id() != "");
-        BOOST_CHECK(a.name() != "");
-        BOOST_CHECK(a.username() != "");
-        BOOST_CHECK(a.password() != "");
-        BOOST_CHECK(a.url() != "");
+        BOOST_CHECK_EQUAL(account.id(), expected.id);
+        BOOST_CHECK_EQUAL(account.name(), expected.name);
+        BOOST_CHECK_EQUAL(account.username(), expected.username);
+        BOOST_CHECK_EQUAL(account.password(), expected.password);
+        //BOOST_CHECK_EQUAL(account.url(), expected.url); // TODO: URLs are not decoded yet.
+        BOOST_CHECK_EQUAL(account.group(), expected.group);
     }
 }
 

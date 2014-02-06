@@ -897,7 +897,11 @@ std::string const BLOB_BASE64 =
     "TAAAACwAAAAeNmY2ZTZkNjk2MzcyNmY3MzZmNjY3NDJlNjM2ZjZkAAAAATEAAAAB"
     "MFVSVUwAAAAoAAAAGjY4NjU3MjZmNmI3NTYxNzA3MDJlNjM2ZjZkAAAAATEAAAAB"
     "MFVSVUwAAAAaAAAADDZlNmY3NjJlNzI3NQAAAAExAAAAATBFTkRNAAAAAk9L";
+
+// TODO: Maybe it's not ok to rely on the base64 decoding function
+//       coming from the library we're trying to test here.
 std::string const BLOB = decode_base64(BLOB_BASE64);
+std::string const ENCRYPTION_KEY = decode_base64("p8utF7ZB8yD06SrtrD4hsdvEOiBU1Y19cr2dhG9DWZg=");
 
 std::vector<Account> const ACCOUNTS = {
     {"1872745596", "Muller, Morar and Wisoky", "branson_cormier", "8jgLCzQSkB2rTZ1OtF9sNGpc", "http://nienow.net/meagan.greenholt", "three"},

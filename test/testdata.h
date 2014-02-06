@@ -36,6 +36,7 @@ struct Account
 extern std::vector<ChunkId> const CHUNK_IDS;
 extern std::string const BLOB_BASE64;
 extern std::string const BLOB;
+extern std::string const ENCRYPTION_KEY;
 extern std::vector<Account> const ACCOUNTS;
 
 }

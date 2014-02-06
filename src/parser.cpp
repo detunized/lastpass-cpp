@@ -4,6 +4,7 @@
 
 #include <array>
 #include <stdexcept>
+#include <sstream>
 
 #include <arpa/inet.h>
 
@@ -144,5 +145,28 @@ std::string Parser::decrypt_aes256_cbc_base64(std::string const &data,
                                     decode_base64(data.substr(1, 24)));
 }
 
+Account Parser::parse_account(std::string const &chunk, std::string const &encryption_key)
+{
+    std::istringstream s(chunk); // TODO: Get rid of the copy!
+
+    auto id = read_item(s);
+    auto name = read_item(s);
+    auto group = read_item(s);
+    auto url = read_item(s);
+
+    for (int i = 0; i < 3; ++i)
+        skip_item(s);
+
+    auto username = read_item(s);
+    auto password = read_item(s);
+
+    return {std::move(id),
+            decrypt_aes256(name, encryption_key),
+            decrypt_aes256(username, encryption_key),
+            decrypt_aes256(password, encryption_key),
+            std::move(url),
+            decrypt_aes256(group, encryption_key)};
+
+}
 
 }
