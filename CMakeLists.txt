@@ -3,6 +3,8 @@ project(lastpass-cpp)
 
 # TODO: Do proper feature detection and enable libraries/compilers based on that!
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
+
 # Enable C++11
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
