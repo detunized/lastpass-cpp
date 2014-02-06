@@ -38,4 +38,12 @@ public:
     static Account parse_account(std::string const &chunk, std::string const &encryption_key);
 };
 
+constexpr ChunkId chunk_id(char c1, char c2, char c3, char c4)
+{
+    return (static_cast<ChunkId>(c1) << 24) |
+           (static_cast<ChunkId>(c2) << 16) |
+           (static_cast<ChunkId>(c3) << 8) |
+           static_cast<ChunkId>(c4);
+}
+
 }

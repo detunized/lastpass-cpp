@@ -9,9 +9,27 @@ namespace test
 {
 
 std::vector<ChunkId> const CHUNK_IDS = {
-    'LPAV', 'ATVR', 'ENCU', 'CBCU', 'BBTE', 'IPTE', 'WMTE', 'ANTE',
-    'DOTE', 'FETE', 'FUTE', 'SYTE', 'WOTE', 'TATE', 'WPTE', 'SPMT',
-    'NMAC', 'ACCT', 'EQDN', 'URUL', 'ENDM'
+    chunk_id('L', 'P', 'A', 'V'),
+    chunk_id('A', 'T', 'V', 'R'),
+    chunk_id('E', 'N', 'C', 'U'),
+    chunk_id('C', 'B', 'C', 'U'),
+    chunk_id('B', 'B', 'T', 'E'),
+    chunk_id('I', 'P', 'T', 'E'),
+    chunk_id('W', 'M', 'T', 'E'),
+    chunk_id('A', 'N', 'T', 'E'),
+    chunk_id('D', 'O', 'T', 'E'),
+    chunk_id('F', 'E', 'T', 'E'),
+    chunk_id('F', 'U', 'T', 'E'),
+    chunk_id('S', 'Y', 'T', 'E'),
+    chunk_id('W', 'O', 'T', 'E'),
+    chunk_id('T', 'A', 'T', 'E'),
+    chunk_id('W', 'P', 'T', 'E'),
+    chunk_id('S', 'P', 'M', 'T'),
+    chunk_id('N', 'M', 'A', 'C'),
+    chunk_id('A', 'C', 'C', 'T'),
+    chunk_id('E', 'Q', 'D', 'N'),
+    chunk_id('U', 'R', 'U', 'L'),
+    chunk_id('E', 'N', 'D', 'M'),
 };
 
 std::string const BLOB_BASE64 =

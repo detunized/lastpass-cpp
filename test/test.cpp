@@ -217,23 +217,26 @@ BOOST_AUTO_TEST_CASE(Fetcher_make_hash)
 BOOST_AUTO_TEST_CASE(Parser_extract_chunks)
 {
     std::istringstream s(std::string(std::begin(BLOB_BYTES), std::end(BLOB_BYTES)));
-    BOOST_CHECK(Parser::extract_chunks(s) == (Chunks {{'LPAV', {{C(31), C(31), C(38)}}}}));
+    BOOST_CHECK(Parser::extract_chunks(s) == (Chunks {{chunk_id('L', 'P', 'A', 'V'), {{C(31), C(31), C(38)}}}}));
 }
 
 BOOST_AUTO_TEST_CASE(Parser_extract_chunks_with_filter)
 {
+    auto LPAV = chunk_id('L', 'P', 'A', 'V');
     std::istringstream s(std::string(std::begin(BLOB_BYTES), std::end(BLOB_BYTES)));
-    BOOST_CHECK(Parser::extract_chunks(s, {'LPAV'}) == (Chunks {{'LPAV', {{C(31), C(31), C(38)}}}}));
+    BOOST_CHECK(Parser::extract_chunks(s, {LPAV}) == (Chunks {{LPAV, {{C(31), C(31), C(38)}}}}));
 }
 
 BOOST_AUTO_TEST_CASE(Parser_extract_chunks_accounts)
 {
-    std::istringstream s(test::BLOB);
-    auto chunks = Parser::extract_chunks(s, {'ACCT'});
-    BOOST_CHECK_EQUAL(chunks.size(), 1);
-    BOOST_CHECK_EQUAL(chunks['ACCT'].size(), test::ACCOUNTS.size());
+    auto ACCT = chunk_id('A', 'C', 'C', 'T');
 
-    auto const &accounts = chunks['ACCT'];
+    std::istringstream s(test::BLOB);
+    auto chunks = Parser::extract_chunks(s, {ACCT});
+    BOOST_CHECK_EQUAL(chunks.size(), 1);
+    BOOST_CHECK_EQUAL(chunks[ACCT].size(), test::ACCOUNTS.size());
+
+    auto const &accounts = chunks[ACCT];
     for (size_t i = 0, size = accounts.size(); i < size; ++i)
     {
         auto account = Parser::parse_account(accounts[i], test::ENCRYPTION_KEY);
