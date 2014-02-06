@@ -11,7 +11,40 @@
 namespace lastpass
 {
 
-typedef uint32_t ChunkId;
+constexpr uint32_t chunk_id(char c1, char c2, char c3, char c4)
+{
+    return (static_cast<uint32_t>(c1) << 24) |
+           (static_cast<uint32_t>(c2) << 16) |
+           (static_cast<uint32_t>(c3) << 8) |
+           static_cast<uint32_t>(c4);
+}
+
+// Known chunk IDs
+enum class ChunkId: uint32_t
+{
+    ACCT = chunk_id('A', 'C', 'C', 'T'),
+    ANTE = chunk_id('A', 'N', 'T', 'E'),
+    ATVR = chunk_id('A', 'T', 'V', 'R'),
+    BBTE = chunk_id('B', 'B', 'T', 'E'),
+    CBCU = chunk_id('C', 'B', 'C', 'U'),
+    DOTE = chunk_id('D', 'O', 'T', 'E'),
+    ENCU = chunk_id('E', 'N', 'C', 'U'),
+    ENDM = chunk_id('E', 'N', 'D', 'M'),
+    EQDN = chunk_id('E', 'Q', 'D', 'N'),
+    FETE = chunk_id('F', 'E', 'T', 'E'),
+    FUTE = chunk_id('F', 'U', 'T', 'E'),
+    IPTE = chunk_id('I', 'P', 'T', 'E'),
+    LPAV = chunk_id('L', 'P', 'A', 'V'),
+    NMAC = chunk_id('N', 'M', 'A', 'C'),
+    SPMT = chunk_id('S', 'P', 'M', 'T'),
+    SYTE = chunk_id('S', 'Y', 'T', 'E'),
+    TATE = chunk_id('T', 'A', 'T', 'E'),
+    URUL = chunk_id('U', 'R', 'U', 'L'),
+    WMTE = chunk_id('W', 'M', 'T', 'E'),
+    WOTE = chunk_id('W', 'O', 'T', 'E'),
+    WPTE = chunk_id('W', 'P', 'T', 'E'),
+};
+
 typedef std::map<ChunkId, std::vector<std::string>> Chunks;
 
 class Parser
@@ -37,13 +70,5 @@ public:
     // Chunk parsers
     static Account parse_account(std::string const &chunk, std::string const &encryption_key);
 };
-
-constexpr ChunkId chunk_id(char c1, char c2, char c3, char c4)
-{
-    return (static_cast<ChunkId>(c1) << 24) |
-           (static_cast<ChunkId>(c2) << 16) |
-           (static_cast<ChunkId>(c3) << 8) |
-           static_cast<ChunkId>(c4);
-}
 
 }

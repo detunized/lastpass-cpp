@@ -9,27 +9,11 @@ namespace test
 {
 
 std::vector<ChunkId> const CHUNK_IDS = {
-    chunk_id('L', 'P', 'A', 'V'),
-    chunk_id('A', 'T', 'V', 'R'),
-    chunk_id('E', 'N', 'C', 'U'),
-    chunk_id('C', 'B', 'C', 'U'),
-    chunk_id('B', 'B', 'T', 'E'),
-    chunk_id('I', 'P', 'T', 'E'),
-    chunk_id('W', 'M', 'T', 'E'),
-    chunk_id('A', 'N', 'T', 'E'),
-    chunk_id('D', 'O', 'T', 'E'),
-    chunk_id('F', 'E', 'T', 'E'),
-    chunk_id('F', 'U', 'T', 'E'),
-    chunk_id('S', 'Y', 'T', 'E'),
-    chunk_id('W', 'O', 'T', 'E'),
-    chunk_id('T', 'A', 'T', 'E'),
-    chunk_id('W', 'P', 'T', 'E'),
-    chunk_id('S', 'P', 'M', 'T'),
-    chunk_id('N', 'M', 'A', 'C'),
-    chunk_id('A', 'C', 'C', 'T'),
-    chunk_id('E', 'Q', 'D', 'N'),
-    chunk_id('U', 'R', 'U', 'L'),
-    chunk_id('E', 'N', 'D', 'M'),
+    ChunkId::LPAV, ChunkId::ATVR, ChunkId::ENCU, ChunkId::CBCU, ChunkId::BBTE,
+    ChunkId::IPTE, ChunkId::WMTE, ChunkId::ANTE, ChunkId::DOTE, ChunkId::FETE,
+    ChunkId::FUTE, ChunkId::SYTE, ChunkId::WOTE, ChunkId::TATE, ChunkId::WPTE,
+    ChunkId::SPMT, ChunkId::NMAC, ChunkId::ACCT, ChunkId::EQDN, ChunkId::URUL,
+    ChunkId::ENDM,
 };
 
 std::string const BLOB_BASE64 =

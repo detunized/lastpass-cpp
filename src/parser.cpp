@@ -68,7 +68,8 @@ ChunkId Parser::read_id(std::istream &stream)
     if (!stream.read(buffer.data(), buffer.max_size()))
         throw std::runtime_error("Failed to read chunk id");
 
-    return htonl(*reinterpret_cast<ChunkId const *>(buffer.data()));
+    static_assert(sizeof(ChunkId) == sizeof(uint32_t), "ChunkId must be of the same size as uint32_t");
+    return ChunkId(htonl(*reinterpret_cast<uint32_t const *>(buffer.data())));
 }
 
 size_t Parser::read_size(std::istream &stream)
