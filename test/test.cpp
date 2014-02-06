@@ -416,10 +416,10 @@ BOOST_AUTO_TEST_CASE(crypto_decrypt_aes256_cbc)
                           i.first);
 }
 
-BOOST_AUTO_TEST_CASE(utils_to_hex)
+BOOST_AUTO_TEST_CASE(utils_encode_hex)
 {
     for (auto const &i: HEX_TO_RAW)
-        BOOST_CHECK_EQUAL(to_hex(i.second), i.first);
+        BOOST_CHECK_EQUAL(encode_hex(i.second), i.first);
 }
 
 BOOST_AUTO_TEST_CASE(utils_decode_hex)

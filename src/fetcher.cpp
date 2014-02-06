@@ -59,8 +59,8 @@ std::string Fetcher::make_hash(std::string const &username, std::string const &p
 {
     auto key = make_key(username, password, iteration_count);
     return iteration_count == 1
-        ? to_hex(sha256(to_hex(key) + password))
-        : to_hex(pbkdf2_sha256(key, password, 1, 32));
+        ? encode_hex(sha256(encode_hex(key) + password))
+        : encode_hex(pbkdf2_sha256(key, password, 1, 32));
 }
 
 }

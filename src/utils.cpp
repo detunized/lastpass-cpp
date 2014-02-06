@@ -14,7 +14,7 @@
 namespace lastpass
 {
 
-std::string to_hex(std::string const &bytes)
+std::string encode_hex(std::string const &bytes)
 {
     static char const hex_chars[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
                                        '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
