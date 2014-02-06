@@ -11,7 +11,7 @@ class AtExit
 public:
     typedef std::function<void()> Function;
 
-    AtExit(Function &&f): f_(f) {}
+    explicit AtExit(Function &&f): f_(f) {}
     ~AtExit() { f_(); }
 
 private:
