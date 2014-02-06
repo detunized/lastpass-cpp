@@ -164,7 +164,7 @@ Account Parser::parse_account(std::string const &chunk, std::string const &encry
             decrypt_aes256(name, encryption_key),
             decrypt_aes256(username, encryption_key),
             decrypt_aes256(password, encryption_key),
-            std::move(url),
+            decode_hex(url),
             decrypt_aes256(group, encryption_key)};
 
 }

@@ -243,7 +243,7 @@ BOOST_AUTO_TEST_CASE(Parser_extract_chunks_accounts)
         BOOST_CHECK_EQUAL(account.name(), expected.name);
         BOOST_CHECK_EQUAL(account.username(), expected.username);
         BOOST_CHECK_EQUAL(account.password(), expected.password);
-        //BOOST_CHECK_EQUAL(account.url(), expected.url); // TODO: URLs are not decoded yet.
+        BOOST_CHECK_EQUAL(account.url(), expected.url);
         BOOST_CHECK_EQUAL(account.group(), expected.group);
     }
 }
