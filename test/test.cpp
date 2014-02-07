@@ -7,6 +7,7 @@
 #include "../src/fetcher.h"
 #include "../src/parser.h"
 #include "../src/session.h"
+#include "../src/vault.h"
 #include "../src/utils.h"
 
 #include <boost/format.hpp>
@@ -50,6 +51,16 @@ std::map<std::string, std::string> const HEX_TO_RAW = {
     {"8af633933e96a3c3550c2734bd814195", {C(8a), C(f6), C(33), C(93), C(3e), C(96), C(a3), C(c3),
                                           C(55), C(0c), C(27), C(34), C(bd), C(81), C(41), C(95)}},
 };
+
+void check_equal(Account const &account, test::Account const &expected)
+{
+    BOOST_CHECK_EQUAL(account.id(), expected.id);
+    BOOST_CHECK_EQUAL(account.name(), expected.name);
+    BOOST_CHECK_EQUAL(account.username(), expected.username);
+    BOOST_CHECK_EQUAL(account.password(), expected.password);
+    BOOST_CHECK_EQUAL(account.url(), expected.url);
+    BOOST_CHECK_EQUAL(account.group(), expected.group);
+}
 
 }
 
@@ -235,17 +246,7 @@ BOOST_AUTO_TEST_CASE(Parser_extract_chunks_accounts)
 
     auto const &accounts = chunks[ChunkId::ACCT];
     for (size_t i = 0, size = accounts.size(); i < size; ++i)
-    {
-        auto account = Parser::parse_account(accounts[i], test::ENCRYPTION_KEY);
-        auto const &expected = test::ACCOUNTS[i];
-
-        BOOST_CHECK_EQUAL(account.id(), expected.id);
-        BOOST_CHECK_EQUAL(account.name(), expected.name);
-        BOOST_CHECK_EQUAL(account.username(), expected.username);
-        BOOST_CHECK_EQUAL(account.password(), expected.password);
-        BOOST_CHECK_EQUAL(account.url(), expected.url);
-        BOOST_CHECK_EQUAL(account.group(), expected.group);
-    }
+        check_equal(Parser::parse_account(accounts[i], test::ENCRYPTION_KEY), test::ACCOUNTS[i]);
 }
 
 BOOST_AUTO_TEST_CASE(Parser_decrypt_aes256_ecb_plain)
@@ -318,6 +319,16 @@ BOOST_AUTO_TEST_CASE(Parser_decrypt_aes256_cbc_base64)
 
     for (auto const &i: test_cases)
         BOOST_CHECK_EQUAL(Parser::decrypt_aes256_cbc_base64(i.second, ENCRYPTION_KEY), i.first);
+}
+
+BOOST_AUTO_TEST_CASE(Vault_create_from_blob)
+{
+    auto vault = Vault::create(Blob(test::BLOB, KEY_ITERATION_COUNT), test::ENCRYPTION_KEY);
+    auto const &accounts = vault.accounts();
+
+    BOOST_CHECK_EQUAL(accounts.size(), test::ACCOUNTS.size());
+    for (size_t i = 0, size = accounts.size(); i < size; ++i)
+        check_equal(accounts[i], test::ACCOUNTS[i]);
 }
 
 BOOST_AUTO_TEST_CASE(crypto_pbkdf2_sha256_short)
