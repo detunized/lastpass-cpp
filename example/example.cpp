@@ -1,6 +1,28 @@
 #include "../src/vault.h"
 
+#include <fstream>
 #include <iostream>
+
+namespace
+{
+
+// Copy example/credentials.txt.example to example/credentials.txt and
+// put your username and then password on the next line.
+
+std::pair<std::string, std::string> read_credentials()
+{
+    std::ifstream f("example/credentials.txt");
+    if (!f.is_open())
+        throw std::runtime_error("Failed to open credentials file");
+
+    std::string username;
+    std::string password;
+    f >> username >> password;
+
+    return std::make_pair(username, password);
+}
+
+}
 
 int main(int argc, char const *argv[])
 {
@@ -8,7 +30,9 @@ int main(int argc, char const *argv[])
 
     try
     {
-        auto vault = Vault::create("username", "password");
+        auto credentials = read_credentials();
+
+        auto vault = Vault::create(credentials.first, credentials.second);
         for (auto const &i: vault.accounts())
         {
             std::cout << "      id: " << i.id() << '\n'
