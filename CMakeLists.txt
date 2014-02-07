@@ -36,6 +36,7 @@ add_library(lastpass src/curlwebclient.cpp
                      src/fetcher.cpp
                      src/parser.cpp
                      src/utils.cpp
+                     src/vault.cpp
                      src/xml.cpp)
 
 # Tests
