@@ -11,13 +11,22 @@ namespace
 
 std::pair<std::string, std::string> read_credentials()
 {
-    std::ifstream f("example/credentials.txt");
-    if (!f.is_open())
-        throw std::runtime_error("Failed to open credentials file");
-
     std::string username;
     std::string password;
-    f >> username >> password;
+
+    std::ifstream f("example/credentials.txt");
+    if (f.is_open())
+    {
+        f >> username >> password;
+    }
+    else
+    {
+        std::cout << "Enter username: " << std::flush;
+        std::cin >> username;
+
+        std::cout << "Enter password: " << std::flush;
+        std::cin >> password;
+    }
 
     return std::make_pair(username, password);
 }
