@@ -41,7 +41,8 @@ add_library(lastpass src/curlwebclient.cpp
 
 # Tests
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-add_executable(test test/test.cpp
+add_executable(test test/account.cpp
+                    test/test.cpp
                     test/testdata.cpp)
 target_link_libraries(test lastpass ${ADDITIONAL_LIBS} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 

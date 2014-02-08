@@ -64,18 +64,6 @@ void check_equal(Account const &account, test::Account const &expected)
 
 }
 
-BOOST_AUTO_TEST_CASE(Account_getters)
-{
-    Account account("id", "name", "username", "password", "url", "group");
-
-    BOOST_CHECK_EQUAL(account.id(), "id");
-    BOOST_CHECK_EQUAL(account.name(), "name");
-    BOOST_CHECK_EQUAL(account.username(), "username");
-    BOOST_CHECK_EQUAL(account.password(), "password");
-    BOOST_CHECK_EQUAL(account.url(), "url");
-    BOOST_CHECK_EQUAL(account.group(), "group");
-}
-
 BOOST_AUTO_TEST_CASE(Session_getters)
 {
     Session session(SESSION_ID, KEY_ITERATION_COUNT);
