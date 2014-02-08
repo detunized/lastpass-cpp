@@ -27,7 +27,7 @@ public:
 
 private:
     Vault(Accounts &&accounts):
-        accounts_(accounts)
+        accounts_(std::move(accounts))
     {
     }
 

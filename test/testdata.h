@@ -16,12 +16,12 @@ struct Account
             std::string &&password,
             std::string &&url,
             std::string &&group):
-        id(id),
-        name(name),
-        username(username),
-        password(password),
-        url(url),
-        group(group)
+        id(std::move(id)),
+        name(std::move(name)),
+        username(std::move(username)),
+        password(std::move(password)),
+        url(std::move(url)),
+        group(std::move(group))
     {
     }
 

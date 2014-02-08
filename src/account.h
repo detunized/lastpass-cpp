@@ -14,12 +14,12 @@ public:
             std::string &&password,
             std::string &&url,
             std::string &&group):
-        id_(id),
-        name_(name),
-        username_(username),
-        password_(password),
-        url_(url),
-        group_(group)
+        id_(std::move(id)),
+        name_(std::move(name)),
+        username_(std::move(username)),
+        password_(std::move(password)),
+        url_(std::move(url)),
+        group_(std::move(group))
     {
     }
 
