@@ -64,13 +64,6 @@ void check_equal(Account const &account, test::Account const &expected)
 
 }
 
-BOOST_AUTO_TEST_CASE(Blob_getters)
-{
-    Blob blob(BLOB_BYTES, KEY_ITERATION_COUNT);
-    BOOST_CHECK(blob.bytes() == BLOB_BYTES);
-    BOOST_CHECK_EQUAL(blob.key_iteration_count(), KEY_ITERATION_COUNT);
-}
-
 BOOST_AUTO_TEST_CASE(Fetcher_login_with_iterations)
 {
     class MockWebClient: public WebClient
