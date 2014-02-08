@@ -64,13 +64,6 @@ void check_equal(Account const &account, test::Account const &expected)
 
 }
 
-BOOST_AUTO_TEST_CASE(Session_getters)
-{
-    Session session(SESSION_ID, KEY_ITERATION_COUNT);
-    BOOST_CHECK_EQUAL(session.id(), SESSION_ID);
-    BOOST_CHECK_EQUAL(session.key_iteration_count(), KEY_ITERATION_COUNT);
-}
-
 BOOST_AUTO_TEST_CASE(Blob_getters)
 {
     Blob blob(BLOB_BYTES, KEY_ITERATION_COUNT);
