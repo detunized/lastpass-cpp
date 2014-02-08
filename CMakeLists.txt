@@ -43,6 +43,7 @@ add_library(lastpass src/curlwebclient.cpp
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 add_executable(test test/account.cpp
                     test/blob.cpp
+                    test/crypto.cpp
                     test/session.cpp
                     test/test.cpp
                     test/testdata.cpp)
