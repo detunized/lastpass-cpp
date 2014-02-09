@@ -36,12 +36,11 @@ struct Account
     std::string const group;
 };
 
-extern std::vector<ChunkId> const CHUNK_IDS;
-extern std::string const BLOB_BASE64;
-extern std::string const BLOB;
-extern std::string const ENCRYPTION_KEY;
 extern int const KEY_ITERATION_COUNT;
+extern std::string const ENCRYPTION_KEY;
+extern std::vector<ChunkId> const CHUNK_IDS;
 extern std::vector<Account> const ACCOUNTS;
+extern std::string const BLOB;
 
 }
 
