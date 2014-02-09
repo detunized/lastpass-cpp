@@ -46,6 +46,7 @@ add_executable(test test/account.cpp
                     test/crypto.cpp
                     test/data.cpp
                     test/fetcher.cpp
+                    test/parser.cpp
                     test/session.cpp
                     test/test.cpp
                     test/utils.cpp
