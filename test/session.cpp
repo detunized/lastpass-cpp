@@ -14,12 +14,12 @@ Session session()
     return {SESSION_ID, KEY_ITERATION_COUNT};
 }
 
-BOOST_AUTO_TEST_CASE(Session_id_returns_id)
+BOOST_AUTO_TEST_CASE(session_id_returns_set_value)
 {
     BOOST_CHECK_EQUAL(session().id(), SESSION_ID);
 }
 
-BOOST_AUTO_TEST_CASE(Session_key_iteration_count_returns_key_iteration_count)
+BOOST_AUTO_TEST_CASE(session_key_iteration_count_returns_set_value)
 {
     BOOST_CHECK_EQUAL(session().key_iteration_count(), KEY_ITERATION_COUNT);
 }

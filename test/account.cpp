@@ -23,32 +23,32 @@ Account account()
             std::string(GROUP)};
 }
 
-BOOST_AUTO_TEST_CASE(Account_id_returns_id)
+BOOST_AUTO_TEST_CASE(account_id_returns_set_value)
 {
     BOOST_CHECK_EQUAL(account().id(), ID);
 }
 
-BOOST_AUTO_TEST_CASE(Account_name_returns_name)
+BOOST_AUTO_TEST_CASE(account_name_returns_set_value)
 {
     BOOST_CHECK_EQUAL(account().name(), NAME);
 }
 
-BOOST_AUTO_TEST_CASE(Account_username_returns_username)
+BOOST_AUTO_TEST_CASE(account_username_returns_set_value)
 {
     BOOST_CHECK_EQUAL(account().username(), USERNAME);
 }
 
-BOOST_AUTO_TEST_CASE(Account_password_returns_password)
+BOOST_AUTO_TEST_CASE(account_password_returns_set_value)
 {
     BOOST_CHECK_EQUAL(account().password(), PASSWORD);
 }
 
-BOOST_AUTO_TEST_CASE(Account_url_returns_url)
+BOOST_AUTO_TEST_CASE(account_url_returns_set_value)
 {
     BOOST_CHECK_EQUAL(account().url(), URL);
 }
 
-BOOST_AUTO_TEST_CASE(Account_group_returns_group)
+BOOST_AUTO_TEST_CASE(account_group_returns_set_value)
 {
     BOOST_CHECK_EQUAL(account().group(), GROUP);
 }

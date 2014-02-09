@@ -96,7 +96,10 @@ BOOST_AUTO_TEST_CASE(crypto_decrypt_aes256_cbc)
     };
 
     for (auto const &i: test_cases)
-        BOOST_CHECK_EQUAL(decrypt_aes256(i.second.second, ENCRYPTION_KEY, CipherMode::CBC, i.second.first),
+        BOOST_CHECK_EQUAL(decrypt_aes256(i.second.second,
+                                         ENCRYPTION_KEY,
+                                         CipherMode::CBC,
+                                         i.second.first),
                           i.first);
 }
 
