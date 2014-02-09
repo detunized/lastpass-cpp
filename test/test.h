@@ -11,10 +11,10 @@
 #include "../src/vault.h"
 #include "../src/xml.h"
 
-#include "testdata.h"
+#include "data.h"
 
-#include <boost/test/unit_test.hpp>
 #include <string>
+#include <boost/test/unit_test.hpp>
 
 namespace lastpass
 {

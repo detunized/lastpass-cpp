@@ -1,6 +1,9 @@
 // TODO: Split this module into separate files!
 
-#include "testdata.h"
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MODULE lastpass
+
+#include "test.h"
 
 #include "../src/account.h"
 #include "../src/crypto.h"
@@ -9,10 +12,6 @@
 #include "../src/session.h"
 #include "../src/vault.h"
 #include "../src/utils.h"
-
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE lastpass
-#include <boost/test/unit_test.hpp>
 
 #define C(dd) (static_cast<char>(0x##dd))
 

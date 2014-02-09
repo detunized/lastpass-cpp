@@ -44,10 +44,10 @@ find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 add_executable(test test/account.cpp
                     test/blob.cpp
                     test/crypto.cpp
+                    test/data.cpp
                     test/fetcher.cpp
                     test/session.cpp
                     test/test.cpp
-                    test/testdata.cpp
                     test/utils.cpp
                     test/vault.cpp)
 target_link_libraries(test lastpass ${ADDITIONAL_LIBS} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
