@@ -48,7 +48,8 @@ add_executable(test test/account.cpp
                     test/session.cpp
                     test/test.cpp
                     test/testdata.cpp
-                    test/utils.cpp)
+                    test/utils.cpp
+                    test/vault.cpp)
 target_link_libraries(test lastpass ${ADDITIONAL_LIBS} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
 # Example

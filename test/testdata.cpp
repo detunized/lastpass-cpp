@@ -8,6 +8,9 @@ namespace lastpass
 namespace test
 {
 
+namespace data
+{
+
 std::vector<ChunkId> const CHUNK_IDS = {
     ChunkId::LPAV, ChunkId::ATVR, ChunkId::ENCU, ChunkId::CBCU, ChunkId::BBTE,
     ChunkId::IPTE, ChunkId::WMTE, ChunkId::ANTE, ChunkId::DOTE, ChunkId::FETE,
@@ -905,6 +908,8 @@ std::string const BLOB_BASE64 =
 std::string const BLOB = decode_base64(BLOB_BASE64);
 std::string const ENCRYPTION_KEY = decode_base64("p8utF7ZB8yD06SrtrD4hsdvEOiBU1Y19cr2dhG9DWZg=");
 
+int const KEY_ITERATION_COUNT = 5000;
+
 std::vector<Account> const ACCOUNTS = {
     {"1872745596", "Muller, Morar and Wisoky", "branson_cormier", "8jgLCzQSkB2rTZ1OtF9sNGpc", "http://nienow.net/meagan.greenholt", "three"},
     {"1872745606", "goyette.net", "kris_quigley@baileyjewe.biz", "S5@3^wPv!6JsFj", "http://bechtelar.biz/tristian.barrows", "four"},
@@ -1007,6 +1012,8 @@ std::vector<Account> const ACCOUNTS = {
     {"1872746596", "jones.name", "elvera", "ewoqt49", "http://sipes.com/joey.metz", "two"},
     {"1872746606", "Tromp-Roob", "brisa.mcdermott", "vcnkg254", "http://bernier.org/gage_haag", "three"},
 };
+
+}
 
 }
 

@@ -8,6 +8,9 @@ namespace lastpass
 namespace test
 {
 
+namespace data
+{
+
 struct Account
 {
     Account(std::string &&id,
@@ -37,7 +40,10 @@ extern std::vector<ChunkId> const CHUNK_IDS;
 extern std::string const BLOB_BASE64;
 extern std::string const BLOB;
 extern std::string const ENCRYPTION_KEY;
+extern int const KEY_ITERATION_COUNT;
 extern std::vector<Account> const ACCOUNTS;
+
+}
 
 }
 

@@ -17,18 +17,26 @@
 #define C(dd) (static_cast<char>(0x##dd))
 
 using namespace lastpass;
+using namespace test;
 
 namespace
 {
 
-int const KEY_ITERATION_COUNT = 5000;
 std::string const BLOB_BYTES {C(4c), C(50), C(41), C(56), C(00), C(00), C(00), C(03), C(31), C(31), C(38)};
 std::string const ENCRYPTION_KEY {C(39), C(f3), C(94), C(bd), C(59), C(d0), C(cc), C(1e),
                                   C(2f), C(e3), C(db), C(0d), C(87), C(8f), C(8f), C(77),
                                   C(02), C(05), C(6f), C(d1), C(6b), C(e7), C(e8), C(d5),
                                   C(7d), C(64), C(53), C(7f), C(e1), C(36), C(1a), C(18)};
 
-void check_equal(Account const &account, test::Account const &expected)
+}
+
+namespace lastpass
+{
+
+namespace test
+{
+
+void check_equal(Account const &account, data::Account const &expected)
 {
     BOOST_CHECK_EQUAL(account.id(), expected.id);
     BOOST_CHECK_EQUAL(account.name(), expected.name);
@@ -36,6 +44,8 @@ void check_equal(Account const &account, test::Account const &expected)
     BOOST_CHECK_EQUAL(account.password(), expected.password);
     BOOST_CHECK_EQUAL(account.url(), expected.url);
     BOOST_CHECK_EQUAL(account.group(), expected.group);
+}
+
 }
 
 }
@@ -54,14 +64,14 @@ BOOST_AUTO_TEST_CASE(Parser_extract_chunks_with_filter)
 
 BOOST_AUTO_TEST_CASE(Parser_extract_chunks_accounts)
 {
-    std::istringstream s(test::BLOB);
+    std::istringstream s(data::BLOB);
     auto chunks = Parser::extract_chunks(s, {ChunkId::ACCT});
     BOOST_CHECK_EQUAL(chunks.size(), 1);
-    BOOST_CHECK_EQUAL(chunks[ChunkId::ACCT].size(), test::ACCOUNTS.size());
+    BOOST_CHECK_EQUAL(chunks[ChunkId::ACCT].size(), data::ACCOUNTS.size());
 
     auto const &accounts = chunks[ChunkId::ACCT];
     for (size_t i = 0, size = accounts.size(); i < size; ++i)
-        check_equal(Parser::parse_account(accounts[i], test::ENCRYPTION_KEY), test::ACCOUNTS[i]);
+        check_equal(Parser::parse_account(accounts[i], data::ENCRYPTION_KEY), data::ACCOUNTS[i]);
 }
 
 BOOST_AUTO_TEST_CASE(Parser_decrypt_aes256_ecb_plain)
@@ -134,14 +144,4 @@ BOOST_AUTO_TEST_CASE(Parser_decrypt_aes256_cbc_base64)
 
     for (auto const &i: test_cases)
         BOOST_CHECK_EQUAL(Parser::decrypt_aes256_cbc_base64(i.second, ENCRYPTION_KEY), i.first);
-}
-
-BOOST_AUTO_TEST_CASE(Vault_create_from_blob)
-{
-    auto vault = Vault::create(Blob(test::BLOB, KEY_ITERATION_COUNT), test::ENCRYPTION_KEY);
-    auto const &accounts = vault.accounts();
-
-    BOOST_CHECK_EQUAL(accounts.size(), test::ACCOUNTS.size());
-    for (size_t i = 0, size = accounts.size(); i < size; ++i)
-        check_equal(accounts[i], test::ACCOUNTS[i]);
 }
