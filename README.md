@@ -1,10 +1,7 @@
-LastPass Ruby API
-=================
+LastPass C++ API
+================
 
-[![Build Status](https://travis-ci.org/detunized/lastpass-ruby.png?branch=master)](https://travis-ci.org/detunized/lastpass-ruby)
-[![Coverage Status](https://coveralls.io/repos/detunized/lastpass-ruby/badge.png?branch=master)](https://coveralls.io/r/detunized/lastpass-ruby?branch=master)
-[![Code Climate](https://codeclimate.com/github/detunized/lastpass-ruby.png)](https://codeclimate.com/github/detunized/lastpass-ruby)
-[![Dependency Status](https://gemnasium.com/detunized/lastpass-ruby.png)](https://gemnasium.com/detunized/lastpass-ruby)
+[![Build Status](https://travis-ci.org/detunized/lastpass-cpp.png?branch=master)](https://travis-ci.org/detunized/lastpass-cpp)
 
 **This is unofficial LastPass API.**
 
@@ -54,7 +51,7 @@ LostPass iOS App
 ----------------
 
 There's an iOS app called [LostPass](http://detunized.net/lostpass/) that is
-based on a totally incomplete C++ port of this library.  If you are a LastPass
+based on this library (well almost).  If you are a LastPass 
 user it would have made your life much easier if I didn't have to take it down
 from the App Store. Now it's open source and if you have a developer account
 or a jailbroken phone you could build it and install it on the phone. The
