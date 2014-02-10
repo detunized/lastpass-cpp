@@ -1,3 +1,6 @@
+// Copyright (C) 2014 Dmitry Yakimenko (detunized@gmail.com).
+// Licensed under the terms of the MIT license. See LICENCE for details.
+
 #include "test.h"
 #include <boost/algorithm/string.hpp>
 
