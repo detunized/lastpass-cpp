@@ -18,104 +18,141 @@ auto const LOGIN_URL = "https://lastpass.com/login.php"_s;
 auto const ITERATIONS_URL = "https://lastpass.com/iterations.php"_s;
 auto const ACCOUNT_DOWNLOAD_URL = "https://lastpass.com/getaccts.php"_s;
 
-BOOST_AUTO_TEST_CASE(Fetcher_login_with_iterations)
+class MockWebClient: public WebClient
 {
-    class MockWebClient: public WebClient
+protected:
+    MockWebClient(std::string const &url,
+                  Values const &values,
+                  Values const &cookies,
+                  std::string const &response):
+        url_(url),
+        values_(values),
+        cookies_(cookies),
+        response_(response)
     {
-    public:
-        virtual std::string get(std::string const &url, Values const &values, Values const &cookies) override
+    }
+
+    std::string fail(std::string const &url, Values const &values, Values const &cookies)
+    {
+        BOOST_FAIL("Should not be called");
+        return {};
+    }
+
+    std::string check(std::string const &url, Values const &values, Values const &cookies)
+    {
+        BOOST_CHECK_EQUAL(url, url_);
+        BOOST_CHECK(values == values_);
+        BOOST_CHECK(cookies == cookies_);
+        return response_;
+    }
+
+private:
+    std::string url_;
+    Values values_;
+    Values cookies_;
+    std::string response_;
+};
+
+class GetMockWebClient: public MockWebClient
+{
+public:
+    GetMockWebClient(std::string const &url,
+                     Values const &values,
+                     Values const &cookies,
+                     std::string const &response):
+        MockWebClient(url, values, cookies, response)
+    {
+    }
+
+    virtual std::string get(std::string const &url,
+                        Values const &values,
+                        Values const &cookies) override
+    {
+        return check(url, values, cookies);
+    }
+
+    virtual std::string post(std::string const &url,
+                             Values const &values,
+                             Values const &cookies) override
+    {
+        return fail(url, values, cookies);
+    }
+};
+
+class PostMockWebClient: public MockWebClient
+{
+public:
+    PostMockWebClient(std::string const &url,
+                      Values const &values,
+                      Values const &cookies,
+                      std::string const &response):
+        MockWebClient(url, values, cookies, response)
+    {
+    }
+
+    virtual std::string get(std::string const &url,
+                            Values const &values,
+                            Values const &cookies) override
+    {
+        return fail(url, values, cookies);
+    }
+
+    virtual std::string post(std::string const &url,
+                             Values const &values,
+                             Values const &cookies) override
+    {
+        return check(url, values, cookies);
+    }
+};
+
+BOOST_AUTO_TEST_CASE(fetcher_login_with_iterations)
+{
+    PostMockWebClient mwc(
+        LOGIN_URL,
         {
-            BOOST_FAIL("Should not be called");
-            return "";
-        }
-
-        virtual std::string post(std::string const &url, Values const &values, Values const &cookies) override
-        {
-            Values expected_values = {
-                {"method", "mobile"},
-                {"web", "1"},
-                {"xml", "1"},
-                {"username", USERNAME},
-                {"hash", HASH},
-                {"iterations", std::to_string(KEY_ITERATION_COUNT)}
-            };
-
-            BOOST_CHECK_EQUAL(url, LOGIN_URL);
-            BOOST_CHECK(values == expected_values);
-            BOOST_CHECK(cookies.empty());
-
-            return str(boost::format("<ok sessionid=\"%1%\" />") % SESSION_ID);
-        }
-
-    } mwc;
+            {"method", "mobile"},
+            {"web", "1"},
+            {"xml", "1"},
+            {"username", USERNAME},
+            {"hash", HASH},
+            {"iterations", std::to_string(KEY_ITERATION_COUNT)}
+        },
+        WebClient::Values(),
+        str(boost::format("<ok sessionid=\"%1%\" />") % SESSION_ID)
+    );
 
     auto session = Fetcher::login(USERNAME, PASSWORD, KEY_ITERATION_COUNT, mwc);
     BOOST_CHECK_EQUAL(session.id(), SESSION_ID);
     BOOST_CHECK_EQUAL(session.key_iteration_count(), KEY_ITERATION_COUNT);
 }
 
-BOOST_AUTO_TEST_CASE(Fetcher_fetch)
+BOOST_AUTO_TEST_CASE(fetcher_fetch)
 {
-    // TODO: Remove code duplication!
-
-    class MockWebClient: public WebClient
-    {
-    public:
-        virtual std::string get(std::string const &url, Values const &values, Values const &cookies) override
-        {
-            Values expected_values = {{"mobile", "1"}, {"b64", "1"}, {"hash", "0.0"}};
-            Values expected_cookies = {{"PHPSESSID", SESSION_ID}};
-
-            BOOST_CHECK_EQUAL(url, ACCOUNT_DOWNLOAD_URL);
-            BOOST_CHECK(values == expected_values);
-            BOOST_CHECK(cookies == expected_cookies);
-
-            return BLOB;
-        }
-
-        virtual std::string post(std::string const &url, Values const &values, Values const &cookies) override
-        {
-            BOOST_FAIL("Should not be called");
-            return "";
-        }
-
-    } mwc;
+    GetMockWebClient mwc(
+        ACCOUNT_DOWNLOAD_URL,
+        {{"mobile", "1"}, {"b64", "1"}, {"hash", "0.0"}},
+        {{"PHPSESSID", SESSION_ID}},
+        BLOB
+    );
 
     auto blob = Fetcher::fetch(Session(SESSION_ID, KEY_ITERATION_COUNT), mwc);
     BOOST_CHECK(blob.bytes() == BLOB_BYTES);
     BOOST_CHECK_EQUAL(blob.key_iteration_count(), KEY_ITERATION_COUNT);
 }
 
-BOOST_AUTO_TEST_CASE(Fetcher_request_iteration_count)
+BOOST_AUTO_TEST_CASE(fetcher_request_iteration_count)
 {
-    // TODO: Remove code duplication!
-
-    class MockWebClient: public WebClient
-    {
-    public:
-        virtual std::string get(std::string const &url, Values const &values, Values const &cookies) override
-        {
-            BOOST_FAIL("Should not be called");
-            return "";
-        }
-
-        virtual std::string post(std::string const &url, Values const &values, Values const &cookies) override
-        {
-            Values expected_values = {{"email", USERNAME}};
-
-            BOOST_CHECK_EQUAL(url, ITERATIONS_URL);
-            BOOST_CHECK(values == expected_values);
-            BOOST_CHECK(cookies.empty());
-
-            return std::to_string(KEY_ITERATION_COUNT);
-        }
-
-    } mwc;
+    PostMockWebClient mwc(
+        ITERATIONS_URL,
+        {{"email", USERNAME}},
+        WebClient::Values(),
+        std::to_string(KEY_ITERATION_COUNT)
+    );
 
     BOOST_CHECK_EQUAL(Fetcher::request_iteration_count(USERNAME, mwc), KEY_ITERATION_COUNT);
 }
 
-BOOST_AUTO_TEST_CASE(Fetcher_make_key)
+BOOST_AUTO_TEST_CASE(fetcher_make_key)
 {
     std::map<int, std::string> test_cases = {
         {1,   "\x0b\xf0\x61\xd9\x21\x96\xc4\x8f\x09\x0e\xee\x78\x0d\xb6\xe9\x57"
@@ -132,7 +169,7 @@ BOOST_AUTO_TEST_CASE(Fetcher_make_key)
         BOOST_CHECK(Fetcher::make_key("postlass@gmail.com", "pl1234567890", i.first) == i.second);
 }
 
-BOOST_AUTO_TEST_CASE(Fetcher_make_hash)
+BOOST_AUTO_TEST_CASE(fetcher_make_hash)
 {
     std::map<int, std::string> test_cases = {
         {1, "a1943cfbb75e37b129bbf78b9baeab4ae6dd08225776397f66b8e0c7a913a055"},
