@@ -24,13 +24,26 @@ program for detail.
 
 A quick example of accessing your account information:
 
-```ruby
-require "lastpass.rb"
+```cpp
+#include <iostream>
+#include <lastpass/vault.h>
 
-vault = LastPass::Vault.open_remote "username", "password"
-vault.accounts.each do |i|
-    puts "#{i.name}: #{i.username}, #{i.password} (#{i.url})"
-end
+int main()
+{
+    auto vault = Vault::create("username", "password");
+    for (auto const &i: vault.accounts())
+    {
+        std::cout << "      id: " << i.id() << '\n'
+                  << "    name: " << i.name() << '\n'
+                  << "username: " << i.username() << '\n'
+                  << "password: " << i.password() << '\n'
+                  << "   group: " << i.group() << '\n'
+                  << "     url: " << i.url() << '\n'
+                  << '\n';
+    }
+
+    return 0;
+}
 ```
 
 The blob received from LastPass could be safely stored locally (it's well
