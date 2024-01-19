@@ -3,6 +3,15 @@ LastPass C++ API
 
 [![Build Status](https://travis-ci.org/detunized/lastpass-cpp.png?branch=master)](https://travis-ci.org/detunized/lastpass-cpp)
 
+## No longer supported
+
+This project is no longer supported. There's a fully supported and regularly 
+updated C# library that implements access to a veriety of password managers, 
+including LastPass. Please check out 
+[Password Manager Access](https://github.com/detunized/password-manager-access).
+
+---
+
 **This is unofficial LastPass API.**
 
 There are also [Ruby](https://github.com/detunized/lastpass-ruby) and
